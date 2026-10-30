@@ -56,9 +56,15 @@ python scripts/run_all.py --scale starter
 python scripts/run_all.py --scale full
 ```
 
-### 3. View the Generated Reports
+### 3. View the Interactive Web Apps & Dashboards
+- **Interactive Streamlit Web App:**
+  ```bash
+  streamlit run app.py
+  ```
+  *Launches an interactive web dashboard in your browser with real-time filtering by carrier, anomaly code, line-item inspector, and credit reconciliation.*
+- **Standalone Offline HTML Website:**
+  - Double-click and open `reports/audit_dashboard.html` in any web browser (Chrome, Edge, Firefox). Includes interactive client-side live search and KPI breakdown.
 - **Executive Markdown Report:** `reports/AUDIT_REPORT.md`
-- **Interactive HTML Dashboard:** Open `reports/audit_dashboard.html` in your web browser.
 
 ---
 

@@ -1,6 +1,8 @@
 # Core dependencies (Standard library is strictly supported for zero-dependency execution)
-# Optional enhancements for development, testing, and rich CLI visualization
+# Optional enhancements for development, testing, and rich web/CLI visualization
 pytest>=8.0.0
 rich>=13.0.0
 tabulate>=0.9.0
+streamlit>=1.30.0
+pandas>=2.0.0
 
