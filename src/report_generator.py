@@ -317,8 +317,11 @@ class ReportGenerator:
 
     <!-- Exceptions Drill Down -->
     <div class="section">
-        <div class="section-title">Sample Audit Exceptions & Dispute Explanations (Traceability Audit Trail)</div>
-        <table>
+        <div class="section-title" style="justify-content: space-between;">
+            <span>Sample Audit Exceptions & Dispute Explanations (Traceability Audit Trail)</span>
+            <input type="text" id="searchInput" onkeyup="filterExceptions()" placeholder="Filter by invoice ID or exception..." style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: #0f172a; color: #f8fafc; font-size: 13px; width: 280px;">
+        </div>
+        <table id="exceptionsTable">
             <thead>
                 <tr>
                     <th>Exception ID</th>
@@ -346,6 +349,18 @@ class ReportGenerator:
             </tbody>
         </table>
     </div>
+
+    <script>
+        function filterExceptions() {
+            var input = document.getElementById("searchInput").value.toUpperCase();
+            var table = document.getElementById("exceptionsTable");
+            var tr = table.getElementsByTagName("tr");
+            for (var i = 1; i < tr.length; i++) {
+                var text = tr[i].textContent || tr[i].innerText;
+                tr[i].style.display = text.toUpperCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+    </script>
 </body>
 </html>
 """

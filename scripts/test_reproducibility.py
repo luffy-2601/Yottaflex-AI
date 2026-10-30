@@ -23,7 +23,7 @@ def compute_file_sha256(filepath: Path) -> str:
             hasher.update(chunk)
     return hasher.hexdigest()
 
-def test_reproducibility(seed: int = DEFAULT_SEED, scale: str = "starter"):
+def run_reproducibility_test(seed: int = DEFAULT_SEED, scale: str = "starter") -> bool:
     print("=================================================================")
     print(f"STEP 10: REPRODUCIBILITY VERIFICATION TEST (Seed={seed}, Scale={scale})")
     print("=================================================================")
@@ -98,7 +98,6 @@ def test_reproducibility(seed: int = DEFAULT_SEED, scale: str = "starter"):
             return True
         else:
             print("REPRODUCIBILITY RESULT: FAILED! Mismatch detected.")
-            assert False, "Reproducibility checksum mismatch detected across runs"
             return False
 
     finally:
@@ -108,7 +107,12 @@ def test_reproducibility(seed: int = DEFAULT_SEED, scale: str = "starter"):
         if dir_run2.exists():
             shutil.rmtree(dir_run2)
 
+def test_reproducibility():
+    """Pytest test case for reproducibility verification."""
+    success = run_reproducibility_test(seed=DEFAULT_SEED, scale="starter")
+    assert success is True
+
 if __name__ == "__main__":
-    success = test_reproducibility()
+    success = run_reproducibility_test()
     if not success:
         sys.exit(1)

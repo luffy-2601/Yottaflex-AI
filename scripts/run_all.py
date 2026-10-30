@@ -24,7 +24,7 @@ from src.validator import DataValidator
 from src.audit_engine import FreightAuditEngine
 from src.evaluation import AuditEvaluator
 from src.report_generator import ReportGenerator
-from scripts.test_reproducibility import test_reproducibility
+from scripts.test_reproducibility import run_reproducibility_test
 
 def run_pipeline(scale: str = "starter", seed: int = DEFAULT_SEED, verify_reproducibility: bool = True):
     start_time = time.time()
@@ -68,7 +68,7 @@ def run_pipeline(scale: str = "starter", seed: int = DEFAULT_SEED, verify_reprod
     # 5. Reproducibility Test
     if verify_reproducibility:
         print("\n[Step 5/5] Running Step 10 Reproducibility Check (Dual run with SHA-256)...")
-        repro_pass = test_reproducibility(seed=seed, scale="starter")
+        repro_pass = run_reproducibility_test(seed=seed, scale="starter")
         if not repro_pass:
             print("  [ERROR] Reproducibility verification failed!")
             sys.exit(1)

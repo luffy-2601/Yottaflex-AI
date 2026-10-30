@@ -921,7 +921,7 @@ class FreightDataGenerator:
         with open(target_dir / "ground_truth.json", "w", encoding="utf-8") as f:
             json.dump(self.ground_truth, f, indent=2)
 
-        # 3. Export SQLite Database
+        # 3. Export SQLite Database & SQL DDL/Seed Scripts
         db_path = target_dir / "freight_audit.db"
         if db_path.exists():
             db_path.unlink()
@@ -940,6 +940,32 @@ class FreightDataGenerator:
                 
         conn.commit()
         conn.close()
+
+        # Export ANSI SQL schema file
+        with open(target_dir / "schema.sql", "w", encoding="utf-8") as f:
+            f.write(SQL_DDL)
+
+        # Export SQL insert statements seed script (Step 9)
+        sql_seed_path = target_dir / "seed_data.sql"
+        with open(sql_seed_path, "w", encoding="utf-8") as f:
+            f.write("-- Freight Audit SQL Seed Script (ANSI SQL Compliant)\n")
+            f.write(SQL_DDL)
+            f.write("\n-- Seed Data Inserts\n")
+            for table_name, records in tables:
+                if records:
+                    headers = list(records[0].__dict__.keys())
+                    for r in records[:200]:  # Seed sample inserts for portability
+                        values = []
+                        for h in headers:
+                            val = getattr(r, h)
+                            if val is None:
+                                values.append("NULL")
+                            elif isinstance(val, (int, float)):
+                                values.append(str(val))
+                            else:
+                                escaped = str(val).replace("'", "''")
+                                values.append(f"'{escaped}'")
+                        f.write(f"INSERT INTO {table_name} ({','.join(headers)}) VALUES ({','.join(values)});\n")
         
         # 4. Export Source Manifest
         manifest = {
