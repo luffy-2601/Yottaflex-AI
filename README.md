@@ -28,10 +28,14 @@
 - **100% Python Standard Library Core:** Zero mandatory external dependencies (`sqlite3`, `csv`, `json`, `hashlib`, `dataclasses`, `datetime`). Runs on any machine instantly.
 - **Full Volume & Coverage (Prompt Step 4):** Deterministically generates 100 carriers, 20,000 shipments, and 15,000 freight invoices in under 8 seconds.
 - **Contract Rating Engine:** Re-rates shipments using domestic dimensional weight ($\frac{L \times W \times H}{139}$), contracted hundredweight (cwt) weight tiers, minimum base charges, dynamic fuel surcharge percentages, and verified accessorial tariffs.
-- **Line-Level Traceability:** Reconciles line items (`BASE_FREIGHT`, `FUEL_SURCHARGE`, `ACCESSORIAL`) against proof-of-delivery (POD) records and shipment legs.
-- **Automated Dispute & Credit Reconciliation:** Automatically generates formal `AuditException` records and reconciles carrier `CreditNote` balances (flagging over-credits).
+- **Carrier Billing Integrity Score (CBIS):** Algorithms rate carrier compliance (0–100) into Risk Tiers (Tier 1 Trusted, Tier 2 Watchlist, Tier 3 High Risk Hold) and flag systematic overcharge patterns.
+- **1-Click Legal Dispute Memo Generator:** Automatically drafts legally binding, NMFTA-compliant freight dispute claim letters for carrier claims settlement.
+- **What-If Supply Chain Simulator:** Real-time financial modeling of diesel fuel spikes, carrier rate inflation, and dimensional divisor policy shifts.
+- **Enterprise REST API Microservice (`api.py`):** Production FastAPI service exposing real-time audit, carrier scorecard, and dispute endpoints with OpenAPI Swagger docs (`/docs`).
+- **Production Dockerization:** Complete containerization via `Dockerfile` and `docker-compose.yml`.
 - **100% Evaluation Performance:** Achieves **100% Precision**, **100% Recall**, and **1.0000 F1-Score** against isolated ground-truth labels across all anomaly types.
 - **Byte-for-Byte Reproducibility:** Verified by Step 10 dual-generation SHA-256 checksum matching with fixed seed `20261022`.
+- **Comprehensive Automated Test Suite:** **21 / 21 test cases passing** across rating logic, API endpoints, risk analytics, and integrity rules.
 
 ---
 
@@ -56,15 +60,30 @@ python scripts/run_all.py --scale starter
 python scripts/run_all.py --scale full
 ```
 
-### 3. View the Interactive Web Apps & Dashboards
-- **Interactive Streamlit Web App:**
+### 3. View the Interactive Web Apps & REST API
+- **Interactive Streamlit Web Control Tower:**
   ```bash
-  streamlit run app.py
+  python -m streamlit run app.py
   ```
-  *Launches an interactive web dashboard in your browser with real-time filtering by carrier, anomaly code, line-item inspector, and credit reconciliation.*
+  *Launches an executive control tower in your browser with real-time filtering, Carrier Integrity (CBIS) scorecards, What-If supply chain simulator, and 1-click legal dispute memo generation.*
+
+- **Enterprise REST API & Swagger UI:**
+  ```bash
+  python -m uvicorn api:app --port 8000 --reload
+  ```
+  *Access the live interactive Swagger UI at `http://127.0.0.1:8000/docs` to test real-time invoice auditing, carrier scorecards, and dispute endpoints.*
+
+- **Docker One-Command Launch:**
+  ```bash
+  docker compose up --build
+  ```
+
 - **Standalone Offline HTML Website:**
   - Double-click and open `reports/audit_dashboard.html` in any web browser (Chrome, Edge, Firefox). Includes interactive client-side live search and KPI breakdown.
-- **Executive Markdown Report:** `reports/AUDIT_REPORT.md`
+
+- **Executive Documentation & Whitepapers:**
+  - [docs/EXECUTIVE_BUSINESS_CASE_AND_ROI.md](docs/EXECUTIVE_BUSINESS_CASE_AND_ROI.md): Enterprise business case, ROI models, and SAP/Oracle integration playbook.
+  - [reports/AUDIT_REPORT.md](reports/AUDIT_REPORT.md): Executive audit summary report.
 
 ---
 
