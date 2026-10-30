@@ -1,0 +1,29 @@
+{
+  "dataset_generation_seed": 20261022,
+  "scale_profile": "full",
+  "timestamp": "2026-10-30T06:05:09.498535+00:00",
+  "table_counts": {
+    "carriers": 100,
+    "lanes": 150,
+    "rate_cards": 33250,
+    "shipments": 20000,
+    "shipment_legs": 20000,
+    "weight_measurements": 20000,
+    "accessorials": 6286,
+    "freight_invoices": 15000,
+    "invoice_lines": 34180,
+    "audit_exceptions": 3126,
+    "credit_notes": 692
+  },
+  "ground_truth_count": 15000,
+  "edge_case_distribution": {
+    "NONE": 11874,
+    "WEIGHT_TIER_MISMATCH": 731,
+    "UNKNOWN_SHIPMENT": 652,
+    "DUPLICATE_SURCHARGE": 453,
+    "EXPIRED_RATE_CARD": 462,
+    "CREDIT_OVER_EXCEPTION": 341,
+    "UNAUTHORIZED_ACCESSORIAL": 261,
+    "DUPLICATE_INVOICE": 226
+  }
+}
