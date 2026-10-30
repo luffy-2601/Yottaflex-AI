@@ -274,3 +274,4 @@ Deliberate negative test cases are injected with exact tags in `ground_truth.csv
 3. `WEIGHT_TIER_MISMATCH`: Carrier applied a rate for a higher weight bracket or ignored dimensional weight.
 4. `DUPLICATE_SURCHARGE`: Fuel surcharge or handling accessorial billed twice on separate lines for the same invoice.
 5. `CREDIT_OVER_EXCEPTION`: Carrier issued a credit note whose amount exceeds the total disputed amount on the exception.
+

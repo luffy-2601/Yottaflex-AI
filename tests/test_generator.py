@@ -58,3 +58,4 @@ def test_line_totals_match_invoice(generator_instance):
     for inv in gen.freight_invoices:
         billed_lines = lines_by_inv.get(inv.invoice_id, [])
         assert abs(inv.total_billed_usd - round(sum(billed_lines), 2)) <= 0.01
+

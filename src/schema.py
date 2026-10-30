@@ -427,3 +427,4 @@ CREATE INDEX IF NOT EXISTS idx_invoices_carrier ON freight_invoices(carrier_id);
 CREATE INDEX IF NOT EXISTS idx_lines_invoice ON invoice_lines(invoice_id);
 CREATE INDEX IF NOT EXISTS idx_exceptions_invoice ON audit_exceptions(invoice_id);
 """
+

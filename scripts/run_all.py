@@ -93,3 +93,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_pipeline(scale=args.scale, seed=args.seed, verify_reproducibility=not args.no_repro)
+

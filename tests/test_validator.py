@@ -22,3 +22,4 @@ def test_validator_passes_all_checks(validated_data):
     assert summary["validation_passed"] is True
     assert summary["violations_found"] == 0
     assert summary["checks_passed"] > 1000
+

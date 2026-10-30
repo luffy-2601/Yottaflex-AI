@@ -73,3 +73,4 @@ def test_audit_evaluation_metrics(audit_data):
     assert metrics["precision"] == 1.0
     assert metrics["recall"] == 1.0
     assert metrics["f1_score"] == 1.0
+

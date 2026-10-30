@@ -73,3 +73,4 @@ ACCESSORIAL_RATES = {
     "REDELIVERY": 90.00,
     "STORAGE": 50.00,
 }
+
