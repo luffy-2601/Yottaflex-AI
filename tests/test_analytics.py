@@ -30,3 +30,4 @@ def test_carrier_risk_engine_calculation():
     assert car2["integrity_score"] < 50.0
     assert car2["risk_tier"] == "TIER_3_HIGH_RISK"
     assert "WEIGHT_TIER_MISMATCH" in car2["primary_anomaly_pattern"]
+

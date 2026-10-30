@@ -80,3 +80,4 @@ The platform does not merely audit transactions; it provides strategic vendor in
 3. **Outbound Response:**
    - If clean: returns status `AUDITED_CLEAN`, triggering an automated 3-way match in SAP MIRO.
    - If disputed: returns status `DISPUTED`, withholding the contested variance and queuing an EDI 824 (Application Advice / Dispute) claim.
+
