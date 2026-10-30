@@ -28,6 +28,65 @@ Before shipping, the company signs a contract with the carrier: *"We will pay $3
 
 ---
 
+## 🗺️ Complete End-to-End Visual Flowchart
+
+Here is the entire lifecycle of how an invoice moves through the platform — from arrival to payment or legal dispute:
+
+```mermaid
+flowchart TD
+    classDef input fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
+    classDef engine fill:#0f172a,stroke:#818cf8,stroke-width:2px,color:#f8fafc;
+    classDef clean fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#34d399;
+    classDef dispute fill:#450a0a,stroke:#f87171,stroke-width:2px,color:#f87171;
+    classDef post fill:#1e293b,stroke:#fbbf24,stroke-width:2px,color:#fbbf24;
+
+    subgraph Inputs["1. Three Operational Inputs"]
+        A["📄 Carrier Freight Bill<br/>(Billed Base, Fuel, Accessorials)"]:::input
+        B["⚖️ Warehouse Dock Data<br/>(Scale Weight & Box Dimensions)"]:::input
+        C["📜 Signed Rate Contract<br/>(Active Tariffs, Tiers, Fuel %)"]:::input
+    end
+
+    subgraph AuditEngine["2. Automated 4-Gate Audit Engine (6.81 Seconds)"]
+        Gate1{"Gate 1: Is Shipment Real?<br/>(Check TMS Registry)"}:::engine
+        Gate2{"Gate 2: Already Billed?<br/>(De-Duplication Check)"}:::engine
+        Gate3{"Gate 3: Math Re-Rating<br/>(Dim Wt vs Scale Wt & Tier Rate)"}:::engine
+        Gate4{"Gate 4: POD Match<br/>(Did driver actually do liftgate?)"}:::engine
+    end
+
+    subgraph Decisions["3. Automated Audit Verdicts"]
+        CleanVerdict["✅ 100% MATCH: CLEAN<br/>(79.2% of Invoices Auto-Approved)"]:::clean
+        DisputeVerdict["⚠️ DISCREPANCY: DISPUTED<br/>(20.8% Overcharges Held Back)"]:::dispute
+    end
+
+    subgraph Settlement["4. Settlement & Risk Intelligence"]
+        Payment["🏦 Release Funds to Carrier<br/>(Post to SAP / Oracle AP)"]:::clean
+        LegalMemo["📄 Auto-Draft Legal Claim Memo<br/>(Dispute Code, Clause Violated, $$ clawed back)"]:::dispute
+        CreditReconcile["💳 Reconcile Carrier Credit Note<br/>(Verify refund balances dispute)"]:::post
+        RiskScoring["🏆 Update Carrier Risk Score (CBIS)<br/>(Tier 1 Trusted vs Tier 3 High-Risk Hold)"]:::post
+    end
+
+    %% Flow connections
+    A & B & C --> Gate1
+    Gate1 -- "❌ No (Phantom ID)" --> DisputeVerdict
+    Gate1 -- "✓ Yes" --> Gate2
+
+    Gate2 -- "❌ Yes (Duplicate)" --> DisputeVerdict
+    Gate2 -- "✓ No (First time)" --> Gate3
+
+    Gate3 -- "❌ Math Mismatch / Expired" --> DisputeVerdict
+    Gate3 -- "✓ Math Matches" --> Gate4
+
+    Gate4 -- "❌ Ghost Fee (No POD)" --> DisputeVerdict
+    Gate4 -- "✓ Verified Proof" --> CleanVerdict
+
+    CleanVerdict --> Payment
+    DisputeVerdict --> LegalMemo
+    LegalMemo --> CreditReconcile
+    CreditReconcile & Payment --> RiskScoring
+```
+
+---
+
 ## ⚖️ Before vs. After: Why This Matters
 
 | Traditional Manual Audit (Before) | FreightGuard AI Platform (After) |
