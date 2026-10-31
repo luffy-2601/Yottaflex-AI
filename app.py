@@ -44,6 +44,11 @@ st.markdown("""
 
 @st.cache_data
 def load_all_data():
+    csv_file = DATA_DIR / "freight_invoices.csv"
+    if not csv_file.exists():
+        from src.generator import SyntheticDataGenerator
+        SyntheticDataGenerator(scale="starter").generate_all()
+
     engine = FreightAuditEngine(data_dir=DATA_DIR)
     audit_output = engine.audit_all()
     evaluator = AuditEvaluator(data_dir=DATA_DIR)

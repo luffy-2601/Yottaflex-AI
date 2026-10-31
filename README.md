@@ -222,6 +222,37 @@ python -m uvicorn api:app --port 8000 --reload
 
 ---
 
+## ☁️ 1-Click Cloud Deployment (No Servers Needed)
+
+This repository is pre-configured for instant production deployment to major cloud platforms:
+
+### Option A: Streamlit Community Cloud (Recommended — Free & Instant)
+1. Go to [share.streamlit.io](https://share.streamlit.io/) and log in with your GitHub account.
+2. Click **"New app"**.
+3. Select repository: `luffy-2601/Yottaflex-AI`, Branch: `main`, Main file path: `app.py`.
+4. Click **"Deploy"**!
+> *The app automatically initializes self-bootstrapping and starts serving within 60 seconds.*
+
+### Option B: Render.com (Full-Stack Blueprint)
+1. Log in to [dashboard.render.com](https://dashboard.render.com/).
+2. Click **"New +"** ➔ **"Blueprint"**.
+3. Connect `https://github.com/luffy-2601/Yottaflex-AI`.
+4. Render automatically detects `render.yaml` and deploys both the **Streamlit Web UI** and **FastAPI Microservice**.
+
+### Option C: Docker Containerization
+```bash
+# Build and run using Docker Compose:
+docker-compose up --build
+
+# Or run the standalone Docker container:
+docker build -t freightguard-ai .
+docker run -p 8501:8501 -p 8000:8000 freightguard-ai
+```
+- Streamlit Control Tower: `http://localhost:8501`
+- FastAPI OpenAPI / Swagger: `http://localhost:8000/docs`
+
+---
+
 ## 🧩 The 11 Core Building Blocks (In Plain English)
 
 The system organizes freight data into 11 interconnected modules:
@@ -248,15 +279,16 @@ The system organizes freight data into 11 interconnected modules:
 
 We verify that this platform is 100% bug-free through multiple independent layers:
 
-### 1. Automated Test Suite (21 Tests Passing)
-Run all 21 automated unit and integration tests:
+### 1. Automated Test Suite (22 Tests Passing)
+Run all 22 automated unit and integration tests:
 ```bash
 python -m pytest -v
 ```
 ```text
-tests/test_analytics.py::test_carrier_risk_engine_calculation PASSED     [ 10%]
-tests/test_api.py::test_health_endpoint PASSED                           [ 14%]
-tests/test_api.py::test_executive_metrics_endpoint PASSED                [ 19%]
+tests/test_analytics.py::test_carrier_risk_engine_calculation PASSED     [  9%]
+tests/test_api.py::test_root_endpoint PASSED                              [ 14%]
+tests/test_api.py::test_health_endpoint PASSED                            [ 18%]
+tests/test_api.py::test_executive_metrics_endpoint PASSED                [ 23%]
 tests/test_audit_engine.py::test_unknown_shipment_detection PASSED       [ 38%]
 tests/test_audit_engine.py::test_expired_rate_card_detection PASSED      [ 42%]
 tests/test_audit_engine.py::test_weight_tier_misapplication_detection PASSED [ 47%]

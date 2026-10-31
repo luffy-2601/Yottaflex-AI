@@ -1,8 +1,18 @@
-# Core dependencies (Standard library is strictly supported for zero-dependency execution)
-# Optional enhancements for development, testing, and rich web/CLI visualization
-pytest>=8.0.0
-rich>=13.0.0
-tabulate>=0.9.0
+# FreightGuard AI Enterprise Dependencies
+# Core rating and audit engine supports pure Python standard library for zero-dependency portability.
+
+# Web Application & Cloud Dashboard
 streamlit>=1.30.0
 pandas>=2.0.0
 
+# Enterprise REST API Microservice
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.6.0
+
+# Testing & Verification
+pytest>=8.0.0
+
+# CLI Formatting & Visualization
+rich>=13.0.0
+tabulate>=0.9.0

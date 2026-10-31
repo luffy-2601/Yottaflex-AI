@@ -2,7 +2,13 @@
 Unit tests for API Endpoints and Business Logic.
 """
 import pytest
-from api import health_check, get_executive_metrics, get_carrier_scorecard, get_dispute_memo, audit_single_invoice, SingleInvoiceAuditRequest, AuditRequestLine
+from api import root, health_check, get_executive_metrics, get_carrier_scorecard, get_dispute_memo, audit_single_invoice, SingleInvoiceAuditRequest, AuditRequestLine
+
+def test_root_endpoint():
+    """Verify root endpoint returns welcome info and docs link."""
+    res = root()
+    assert res["version"] == "2.0.0"
+    assert res["documentation"] == "/docs"
 
 def test_health_endpoint():
     """Verify health endpoint returns healthy status."""

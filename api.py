@@ -35,6 +35,11 @@ audit_cache: Dict[str, Any] = {}
 
 def get_audit_data():
     if not audit_cache:
+        csv_file = DATA_DIR / "freight_invoices.csv"
+        if not csv_file.exists():
+            from src.generator import SyntheticDataGenerator
+            SyntheticDataGenerator(scale="starter").generate_all()
+
         audit_output = engine.audit_all()
         evaluator = AuditEvaluator(data_dir=DATA_DIR)
         eval_results = evaluator.evaluate(audit_output["audit_results"])
@@ -80,6 +85,17 @@ class HealthResponse(BaseModel):
 # ==========================================
 # REST API Endpoints
 # ==========================================
+
+@app.get("/", tags=["Root"])
+def root():
+    """Root endpoint welcoming visitors and directing to interactive OpenAPI documentation."""
+    return {
+        "service": "Freight Invoice Audit & Recovery REST API",
+        "version": "2.0.0",
+        "documentation": "/docs",
+        "health": "/health",
+        "description": "Production AI & Algorithmic Freight Audit Service. Open /docs for Swagger UI."
+    }
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 def health_check():
