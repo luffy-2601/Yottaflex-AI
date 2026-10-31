@@ -1,7 +1,7 @@
 {
   "dataset_generation_seed": 20261022,
   "scale_profile": "full",
-  "timestamp": "2026-10-30T06:53:12.803742+00:00",
+  "timestamp": "2026-10-31T14:25:09.353593+00:00",
   "table_counts": {
     "carriers": 100,
     "lanes": 150,

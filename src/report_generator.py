@@ -150,8 +150,31 @@ class ReportGenerator:
             --accent-red: #f87171;
             --accent-amber: #fbbf24;
             --border-color: #334155;
+            --table-header: rgba(0,0,0,0.2);
+            --table-hover: rgba(255,255,255,0.02);
+            --code-bg: rgba(255, 255, 255, 0.08);
+            --input-bg: #0f172a;
+            --badge-bg: rgba(56, 189, 248, 0.2);
+            --shadow: none;
         }}
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        [data-theme="light"] {{
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-blue: #0284c7;
+            --accent-green: #059669;
+            --accent-red: #dc2626;
+            --accent-amber: #d97706;
+            --border-color: #cbd5e1;
+            --table-header: #f1f5f9;
+            --table-hover: rgba(0,0,0,0.02);
+            --code-bg: rgba(0, 0, 0, 0.06);
+            --input-bg: #ffffff;
+            --badge-bg: #e0f2fe;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }}
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-primary);
@@ -166,8 +189,33 @@ class ReportGenerator:
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 20px;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
         }}
         .header h1 {{ font-size: 24px; color: var(--accent-blue); }}
+        .header-actions {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }}
+        .theme-btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }}
+        .theme-btn:hover {{
+            border-color: var(--accent-blue);
+            transform: translateY(-1px);
+        }}
         .header .meta {{ color: var(--text-secondary); font-size: 14px; text-align: right; }}
         .badge {{
             display: inline-block;
@@ -175,7 +223,7 @@ class ReportGenerator:
             border-radius: 9999px;
             font-size: 12px;
             font-weight: 600;
-            background: rgba(56, 189, 248, 0.2);
+            background: var(--badge-bg);
             color: var(--accent-blue);
         }}
         .grid-kpi {{
@@ -189,6 +237,7 @@ class ReportGenerator:
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
+            box-shadow: var(--shadow);
         }}
         .kpi-title {{ font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }}
         .kpi-value {{ font-size: 26px; font-weight: 700; margin-top: 8px; }}
@@ -200,6 +249,7 @@ class ReportGenerator:
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
+            box-shadow: var(--shadow);
         }}
         .section-title {{
             font-size: 18px;
@@ -219,13 +269,20 @@ class ReportGenerator:
             padding: 12px 14px;
             border-bottom: 1px solid var(--border-color);
         }}
-        th {{ color: var(--text-secondary); font-weight: 600; background: rgba(0,0,0,0.15); }}
-        tr:hover {{ background: rgba(255,255,255,0.02); }}
+        th {{ color: var(--text-secondary); font-weight: 600; background: var(--table-header); }}
+        tr:hover {{ background: var(--table-hover); }}
+        code {{
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }}
         .severity-CRITICAL {{ color: #ef4444; font-weight: bold; }}
         .severity-HIGH {{ color: #f97316; font-weight: bold; }}
         .severity-MEDIUM {{ color: #eab308; }}
         .progress-bar-bg {{
-            background: #334155;
+            background: var(--border-color);
             border-radius: 4px;
             height: 8px;
             width: 100px;
@@ -238,6 +295,20 @@ class ReportGenerator:
             height: 100%;
             border-radius: 4px;
         }}
+        .search-box {{
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            outline: none;
+        }}
+        .search-box:focus {{
+            border-color: var(--accent-blue);
+        }}
     </style>
 </head>
 <body>
@@ -246,8 +317,13 @@ class ReportGenerator:
             <h1>Freight Invoice Audit & Reconciliation Engine</h1>
             <p style="color: var(--text-secondary); margin-top: 4px;">Automated Contract Rate Validation & Dispute Workflow</p>
         </div>
-        <div class="meta">
-            <span class="badge">Deterministic Seed: {manifest.get('dataset_generation_seed', 20261022)}</span><br>
+        <div class="header-actions">
+            <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-btn" title="Toggle Light/Dark Theme">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Light Mode</span>
+            </button>
+            <div class="meta">
+                <span class="badge">Deterministic Seed: {manifest.get('dataset_generation_seed', 20261022)}</span><br>
             <span>Scale: {manifest.get('scale_profile', 'starter').upper()} | Evaluated at: {datetime.datetime.now(datetime.timezone.utc).strftime('%H:%M:%S UTC')}</span>
         </div>
     </div>
@@ -351,6 +427,32 @@ class ReportGenerator:
     </div>
 
     <script>
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var target = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('freight_dashboard_theme', target);
+            updateThemeUI(target);
+        }
+
+        function updateThemeUI(theme) {
+            var icon = document.getElementById('themeIcon');
+            var label = document.getElementById('themeLabel');
+            if (theme === 'light') {
+                if (icon) icon.textContent = '🌙';
+                if (label) label.textContent = 'Dark Mode';
+            } else {
+                if (icon) icon.textContent = '☀️';
+                if (label) label.textContent = 'Light Mode';
+            }
+        }
+
+        (function() {
+            var saved = localStorage.getItem('freight_dashboard_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            updateThemeUI(saved);
+        })();
+
         function filterExceptions() {
             var input = document.getElementById("searchInput").value.toUpperCase();
             var table = document.getElementById("exceptionsTable");

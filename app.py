@@ -25,22 +25,60 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Enterprise CSS Theme
-st.markdown("""
-<style>
-    .main { background-color: #0b1120; }
-    .stMetric {
-        background: #1e293b;
-        border: 1px solid #334155;
-        border-radius: 10px;
-        padding: 12px 18px;
-    }
-    .stMetric label { color: #94a3b8 !important; font-size: 13px !important; }
-    .badge-tier1 { background: rgba(52, 211, 153, 0.2); color: #34d399; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
-    .badge-tier2 { background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
-    .badge-tier3 { background: rgba(248, 113, 113, 0.2); color: #f87171; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
-</style>
-""", unsafe_allow_html=True)
+# Custom Enterprise CSS Theme & Dynamic Theme Engine
+theme_choice = st.sidebar.radio(
+    "Visual Theme",
+    ["🌙 Cyber Dark", "☀️ Executive Light"],
+    index=0,
+    horizontal=True,
+    help="Toggle between Cyber Dark and Clean Executive Light modes"
+)
+is_dark = "Dark" in theme_choice
+
+if is_dark:
+    st.markdown("""
+    <style>
+        .main { background-color: #0b1120; }
+        .stApp { background-color: #0b1120; color: #f8fafc; }
+        [data-testid="stSidebar"] { background-color: #0f172a; border-right: 1px solid #1e293b; }
+        .stMetric {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px 18px;
+        }
+        .stMetric label { color: #94a3b8 !important; font-size: 13px !important; }
+        .badge-tier1 { background: rgba(52, 211, 153, 0.2); color: #34d399; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+        .badge-tier2 { background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+        .badge-tier3 { background: rgba(248, 113, 113, 0.2); color: #f87171; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+        .status-badge { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px; color: #38bdf8; font-weight: 600; font-size: 13px; }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+        .main { background-color: #f8fafc; }
+        .stApp { background-color: #f8fafc; color: #0f172a; }
+        [data-testid="stSidebar"] { background-color: #ffffff; border-right: 1px solid #e2e8f0; }
+        .stMetric {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
+            border-radius: 10px;
+            padding: 12px 18px;
+        }
+        .stMetric label { color: #64748b !important; font-size: 13px !important; }
+        .stMetric div[data-testid="stMetricValue"] { color: #0f172a !important; font-weight: 700; }
+        .badge-tier1 { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+        .badge-tier2 { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+        .badge-tier3 { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+        .status-badge { background: #e0f2fe; border: 1px solid #bae6fd; padding: 6px 12px; border-radius: 6px; color: #0369a1; font-weight: 600; font-size: 13px; }
+        h1, h2, h3, h4, h5, h6 { color: #0f172a !important; }
+        .stMarkdown p, .stMarkdown span { color: #334155; }
+        .stCaption { color: #64748b !important; }
+        div[data-testid="stExpander"] { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; }
+    </style>
+    """, unsafe_allow_html=True)
 
 @st.cache_data
 def load_all_data():
@@ -76,7 +114,7 @@ with col_t1:
     st.title("🚛 Freight Intelligence & Dispute Recovery Tower")
     st.caption("AI Forward Deployed Engineering • Automated Tariff Re-Rating • Carrier Integrity Scoring • Legal Dispute Settlement")
 with col_t2:
-    st.markdown("<div style='text-align: right; padding-top: 15px;'><span style='background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px; color: #38bdf8; font-weight: 600; font-size: 13px;'>API Status: Ready (v2.0)</span></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: right; padding-top: 15px;'><span class='status-badge'>API Status: Ready (v2.0)</span></div>", unsafe_allow_html=True)
 
 # Sidebar
 st.sidebar.header("🎛️ Navigation & Controls")
