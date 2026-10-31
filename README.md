@@ -10,7 +10,7 @@
 
 **An enterprise-grade platform that validates commercial freight invoices against signed contracts, certified scale weights, and delivery records — auto-approving clean bills and instantly catching overcharges down to the penny.**
 
-[Quick Start](#-quick-start-run-it-in-10-seconds) • [How It Works in Plain English](#-the-problem-in-plain-english-no-tech-jargon) • [The 6 Tricks Caught](#-the-6-freight-billing-tricks-this-system-catches) • [Live Web Control Tower](#-experience-the-interactive-web-apps) • [Executive ROI](#-business-impact--hard-numbers)
+[Live Website Demo](https://luffy-2601.github.io/Yottaflex-AI/) • [Quick Start](#-quick-start-run-it-in-10-seconds) • [How It Works in Plain English](#-the-problem-in-plain-english-no-tech-jargon) • [The 6 Tricks Caught](#-the-6-freight-billing-tricks-this-system-catches) • [Live Web Control Tower](#-experience-the-interactive-web-apps) • [Executive ROI](#-business-impact--hard-numbers)
 
 </div>
 
@@ -165,7 +165,15 @@ In our full production benchmark of **15,000 freight invoices** from **100 comme
 
 ## 🎮 Experience the Interactive Web Apps
 
-You don't need to be a programmer to explore this system. We provide **two interactive visual interfaces**:
+You don't need to be a programmer to explore this system. We provide multiple ways to experience the platform:
+
+### 🌐 Live Public Website (Hosted on GitHub Pages)
+Open the live dashboard instantly in your browser without installing anything:  
+👉 **[https://luffy-2601.github.io/Yottaflex-AI/](https://luffy-2601.github.io/Yottaflex-AI/)**
+
+*(Features client-side live search, KPI metrics, and exception drill-down).*
+
+---
 
 ### 1. The Palantir-Style Web Control Tower ([`app.py`](app.py))
 Run this one command in your terminal:
