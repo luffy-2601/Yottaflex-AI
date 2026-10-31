@@ -8,6 +8,11 @@
 ![Zero Dependencies](https://img.shields.io/badge/Setup-Zero%20External%20Deps-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
 
+<br/>
+
+[![Deploy with Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=luffy-2601/Yottaflex-AI&branch=main&mainModule=app.py)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/luffy-2601/Yottaflex-AI)
+
 **An enterprise-grade platform that validates commercial freight invoices against signed contracts, certified scale weights, and delivery records — auto-approving clean bills and instantly catching overcharges down to the penny.**
 
 [Live Website Demo](https://luffy-2601.github.io/Yottaflex-AI/) • [Quick Start](#-quick-start-run-it-in-10-seconds) • [How It Works in Plain English](#-the-problem-in-plain-english-no-tech-jargon) • [The 6 Tricks Caught](#-the-6-freight-billing-tricks-this-system-catches) • [Live Web Control Tower](#-experience-the-interactive-web-apps) • [Executive ROI](#-business-impact--hard-numbers)
