@@ -121,12 +121,165 @@ if "user_role" not in st.session_state:
     st.session_state["user_role"] = "Lead Freight Auditor"
 if "auth_provider" not in st.session_state:
     st.session_state["auth_provider"] = "Enterprise SSO"
+if "oauth_chooser" not in st.session_state:
+    st.session_state["oauth_chooser"] = None
 
 if not st.session_state["authenticated"]:
     st.markdown("<br>", unsafe_allow_html=True)
     c_left, c_center, c_right = st.columns([1, 2.2, 1])
     
     with c_center:
+        # ----------------------------------------------------------------------
+        # OAUTH ACCOUNT CHOOSER SUB-SCREENS
+        # ----------------------------------------------------------------------
+        if st.session_state.get("oauth_chooser") == "Google":
+            st.markdown(f"""
+            <div style='text-align: center; margin-bottom: 20px;'>
+                <div style='font-size: 40px;'>🔴</div>
+                <h3 style='margin-bottom: 4px; color: {"#38bdf8" if is_dark else "#0284c7"};'>Sign in with Google</h3>
+                <p style='color: {"#94a3b8" if is_dark else "#64748b"}; font-size: 13px;'>Choose an account to continue to <b>FreightGuard AI</b></p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            google_accounts = [
+                "Alex Mercer (a.mercer@enterprise-logistics.com) • Corporate Workspace",
+                "Sriram Alex (sriram.alex@gmail.com) • Personal Google Account",
+                "Elena Rostova (e.rostova@carrier-partners.com) • Carrier Partner Account",
+                "➕ Use another Google account..."
+            ]
+            chosen_acc = st.radio("Select Google Account:", google_accounts, index=0)
+            
+            custom_email = ""
+            custom_name = ""
+            if "Use another" in chosen_acc:
+                custom_name = st.text_input("Your Full Name", value="Alex Mercer", key="google_custom_name")
+                custom_email = st.text_input("Google Email Address", placeholder="name@domain.com", key="google_custom_email")
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            c_btn1, c_btn2 = st.columns([1.6, 1])
+            with c_btn1:
+                if st.button("➡️ Continue with Selected Account", type="primary", use_container_width=True):
+                    if "Use another" in chosen_acc:
+                        user_mail = custom_email if custom_email else "alex.mercer@gmail.com"
+                        user_name = custom_name if custom_name else user_mail.split("@")[0].title()
+                    else:
+                        parts = chosen_acc.split(" (")
+                        user_name = parts[0]
+                        user_mail = parts[1].split(")")[0]
+                    
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "Google Workspace"
+                    st.session_state["user_name"] = user_name
+                    st.session_state["user_email"] = user_mail
+                    st.session_state["user_role"] = "Senior Freight Audit Specialist"
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+            with c_btn2:
+                if st.button("← Switch Method", use_container_width=True):
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+                    
+            st.stop()
+
+        elif st.session_state.get("oauth_chooser") == "Facebook":
+            st.markdown(f"""
+            <div style='text-align: center; margin-bottom: 20px;'>
+                <div style='font-size: 40px;'>🔵</div>
+                <h3 style='margin-bottom: 4px; color: {"#38bdf8" if is_dark else "#0284c7"};'>Log in with Facebook</h3>
+                <p style='color: {"#94a3b8" if is_dark else "#64748b"}; font-size: 13px;'>Select which profile to authorize for <b>FreightGuard AI</b></p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            fb_accounts = [
+                "Jordan Taylor (jordan.taylor@freight-network.org) • Meta Business Manager",
+                "Logistics Audit Team (operations@supplychain.net) • Operations Page",
+                "➕ Log in to another Facebook account..."
+            ]
+            chosen_fb = st.radio("Select Facebook Profile:", fb_accounts, index=0)
+            
+            custom_fb_name = ""
+            custom_fb_email = ""
+            if "another" in chosen_fb:
+                custom_fb_name = st.text_input("Facebook Profile Name", value="Jordan Taylor", key="fb_custom_name")
+                custom_fb_email = st.text_input("Facebook Email or Phone", placeholder="jordan@domain.com", key="fb_custom_email")
+                
+            st.markdown("<br>", unsafe_allow_html=True)
+            c_btn1, c_btn2 = st.columns([1.6, 1])
+            with c_btn1:
+                if st.button("➡️ Continue with Facebook", type="primary", use_container_width=True):
+                    if "another" in chosen_fb:
+                        user_mail = custom_fb_email if custom_fb_email else "jordan@meta.com"
+                        user_name = custom_fb_name if custom_fb_name else "Jordan Taylor"
+                    else:
+                        parts = chosen_fb.split(" (")
+                        user_name = parts[0]
+                        user_mail = parts[1].split(")")[0]
+                        
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "Meta / Facebook"
+                    st.session_state["user_name"] = user_name
+                    st.session_state["user_email"] = user_mail
+                    st.session_state["user_role"] = "Supply Chain Operations Lead"
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+            with c_btn2:
+                if st.button("← Switch Method", use_container_width=True):
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+                    
+            st.stop()
+
+        elif st.session_state.get("oauth_chooser") == "X":
+            st.markdown(f"""
+            <div style='text-align: center; margin-bottom: 20px;'>
+                <div style='font-size: 40px;'>𝕏</div>
+                <h3 style='margin-bottom: 4px; color: {"#38bdf8" if is_dark else "#0284c7"};'>Authorize with X</h3>
+                <p style='color: {"#94a3b8" if is_dark else "#64748b"}; font-size: 13px;'>Select your X handle to authenticate with <b>FreightGuard AI</b></p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            x_accounts = [
+                "@FreightAuditorAI (Morgan Vance • Logistics CFO)",
+                "@AlexMercer_Audit (Alex Mercer • Lead Auditor)",
+                "➕ Switch to another X account..."
+            ]
+            chosen_x = st.radio("Select X Account:", x_accounts, index=0)
+            
+            custom_x_handle = ""
+            if "Switch" in chosen_x:
+                custom_x_handle = st.text_input("X Handle (@username)", placeholder="@your_handle", key="x_custom_handle")
+                
+            st.markdown("<br>", unsafe_allow_html=True)
+            c_btn1, c_btn2 = st.columns([1.6, 1])
+            with c_btn1:
+                if st.button("➡️ Authorize and Continue", type="primary", use_container_width=True):
+                    if "Switch" in chosen_x:
+                        handle = custom_x_handle if custom_x_handle else "@auditor_pro"
+                        user_name = f"{handle} (X)"
+                        user_mail = f"{handle.replace('@', '')}@x-auth.io"
+                    else:
+                        handle = chosen_x.split(" ")[0]
+                        name = chosen_x.split("(")[1].split(" •")[0]
+                        user_name = f"{name} ({handle})"
+                        user_mail = f"{handle.replace('@', '').lower()}@x-auth.io"
+                        
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "X (Twitter)"
+                    st.session_state["user_name"] = user_name
+                    st.session_state["user_email"] = user_mail
+                    st.session_state["user_role"] = "Enterprise Logistics CFO"
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+            with c_btn2:
+                if st.button("← Switch Method", use_container_width=True):
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+                    
+            st.stop()
+
+        # ----------------------------------------------------------------------
+        # MAIN AUTHENTICATION PORTAL
+        # ----------------------------------------------------------------------
         st.markdown(f"""
         <div style='text-align: center; margin-bottom: 24px;'>
             <div style='font-size: 42px;'>🚛</div>
@@ -140,33 +293,21 @@ if not st.session_state["authenticated"]:
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("#### ⚡ 1-Click Social Sign-In")
+        st.markdown("#### ⚡ Choose Social Account to Sign In")
         col_g, col_fb, col_x = st.columns(3)
         with col_g:
-            if st.button("🔴 Google", use_container_width=True, help="Sign in with Google Workspace"):
-                st.session_state["authenticated"] = True
-                st.session_state["auth_provider"] = "Google Workspace"
-                st.session_state["user_name"] = "Alex Mercer (Google)"
-                st.session_state["user_email"] = "alex.mercer@enterprise-logistics.com"
-                st.session_state["user_role"] = "Senior Freight Audit Specialist"
+            if st.button("🔴 Google", use_container_width=True, help="Choose Google Account"):
+                st.session_state["oauth_chooser"] = "Google"
                 st.rerun()
 
         with col_fb:
-            if st.button("🔵 Facebook", use_container_width=True, help="Sign in with Meta / Facebook"):
-                st.session_state["authenticated"] = True
-                st.session_state["auth_provider"] = "Meta / Facebook"
-                st.session_state["user_name"] = "Jordan Taylor (Meta)"
-                st.session_state["user_email"] = "jordan.taylor@freight-network.org"
-                st.session_state["user_role"] = "Supply Chain Operations Lead"
+            if st.button("🔵 Facebook", use_container_width=True, help="Choose Facebook Account"):
+                st.session_state["oauth_chooser"] = "Facebook"
                 st.rerun()
 
         with col_x:
-            if st.button("𝕏 / Twitter", use_container_width=True, help="Sign in with X"):
-                st.session_state["authenticated"] = True
-                st.session_state["auth_provider"] = "X (Twitter)"
-                st.session_state["user_name"] = "Morgan Vance (X)"
-                st.session_state["user_email"] = "m.vance@supplychain-cfo.io"
-                st.session_state["user_role"] = "Enterprise Logistics CFO"
+            if st.button("𝕏 / Twitter", use_container_width=True, help="Choose X Account"):
+                st.session_state["oauth_chooser"] = "X"
                 st.rerun()
 
         st.markdown(f"""
