@@ -132,182 +132,43 @@ if not st.session_state["authenticated"]:
     
     with c_center:
         # ----------------------------------------------------------------------
-        # SCREENSHOT 2: EXACT GOOGLE OAUTH "CHOOSE AN ACCOUNT" POPUP
+        # DYNAMIC GOOGLE SIGN-IN PROMPT (FOR ANY USER / FRIEND'S OWN GOOGLE ACCOUNT)
         # ----------------------------------------------------------------------
         if st.session_state.get("oauth_chooser") == "Google":
             st.markdown(f"""
-            <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4);'>
-                <div style='display: flex; align-items: center; gap: 8px; margin-bottom: 24px;'>
-                    <span style='font-size: 20px;'>🔴</span>
-                    <span style='font-size: 14px; color: {"#9ca3af" if is_dark else "#4b5563"}; font-weight: 500;'>Sign in with Google</span>
+            <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 28px 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;'>
+                <div style='display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;'>
+                    <span style='font-size: 28px;'>🔴</span>
+                    <span style='font-size: 18px; font-weight: 600; color: {"#ffffff" if is_dark else "#111827"};'>Google</span>
                 </div>
-                <h1 style='font-size: 32px; font-weight: 600; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Choose an account</h1>
+                <h2 style='font-size: 26px; font-weight: 600; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Sign in with Google</h2>
                 <p style='color: {"#9ca3af" if is_dark else "#6b7280"}; font-size: 14px; margin-bottom: 24px;'>to continue to <b style='color: {"#38bdf8" if is_dark else "#0284c7"};'>FreightGuard AI</b></p>
             </div>
             """, unsafe_allow_html=True)
 
-            # Account 1: Sriram Venkat
-            col_acc1, col_act1 = st.columns([4, 1])
-            with col_acc1:
-                st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 14px; padding: 6px 0;'>
-                    <div style='width: 38px; height: 38px; border-radius: 50%; background-color: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;'>S</div>
-                    <div>
-                        <div style='font-size: 15px; font-weight: 600; color: {"#f3f4f6" if is_dark else "#111827"};'>Sriram Venkat</div>
-                        <div style='font-size: 13px; color: {"#9ca3af" if is_dark else "#6b7280"};'>srirambv26@gmail.com</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            with col_act1:
-                if st.button("Select", key="btn_acc_sriram", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = "Sriram Venkat"
-                    st.session_state["user_email"] = "srirambv26@gmail.com"
-                    st.session_state["user_role"] = "Lead Freight Auditor"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
-            st.divider()
-
-            # Account 2: naruto uzumakhi
-            col_acc2, col_act2 = st.columns([4, 1])
-            with col_acc2:
-                st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 14px; padding: 6px 0;'>
-                    <div style='width: 38px; height: 38px; border-radius: 50%; background-color: #9333ea; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;'>n</div>
-                    <div>
-                        <div style='font-size: 15px; font-weight: 600; color: {"#f3f4f6" if is_dark else "#111827"};'>naruto uzumakhi</div>
-                        <div style='font-size: 13px; color: {"#9ca3af" if is_dark else "#6b7280"};'>narutouzumakhi85@gmail.com</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            with col_act2:
-                if st.button("Select", key="btn_acc_naruto", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = "naruto uzumakhi"
-                    st.session_state["user_email"] = "narutouzumakhi85@gmail.com"
-                    st.session_state["user_role"] = "Logistics Operations Lead"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
-            st.divider()
-
-            # Account 3: venkat
-            col_acc3, col_act3 = st.columns([4, 1])
-            with col_acc3:
-                st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 14px; padding: 6px 0;'>
-                    <div style='width: 38px; height: 38px; border-radius: 50%; background-color: #db2777; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;'>v</div>
-                    <div>
-                        <div style='font-size: 15px; font-weight: 600; color: {"#f3f4f6" if is_dark else "#111827"};'>venkat</div>
-                        <div style='font-size: 13px; color: {"#9ca3af" if is_dark else "#6b7280"};'>sriramvenkat026@gmail.com</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            with col_act3:
-                if st.button("Select", key="btn_acc_venkat", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = "venkat"
-                    st.session_state["user_email"] = "sriramvenkat026@gmail.com"
-                    st.session_state["user_role"] = "Senior Supply Chain Analyst"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
-            st.divider()
-
-            # Account 4: Mattaparthi Sunitha
-            col_acc4, col_act4 = st.columns([4, 1])
-            with col_acc4:
-                st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 14px; padding: 6px 0;'>
-                    <div style='width: 38px; height: 38px; border-radius: 50%; background-color: #16a34a; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;'>M</div>
-                    <div>
-                        <div style='font-size: 15px; font-weight: 600; color: {"#f3f4f6" if is_dark else "#111827"};'>Mattaparthi Sunitha</div>
-                        <div style='font-size: 13px; color: {"#9ca3af" if is_dark else "#6b7280"};'>sunithasd09@gmail.com</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            with col_act4:
-                if st.button("Select", key="btn_acc_sunitha", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = "Mattaparthi Sunitha"
-                    st.session_state["user_email"] = "sunithasd09@gmail.com"
-                    st.session_state["user_role"] = "Corporate Freight Controller"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
-            st.divider()
-
-            # Account 5: Geetha
-            col_acc5, col_act5 = st.columns([4, 1])
-            with col_acc5:
-                st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 14px; padding: 6px 0;'>
-                    <div style='width: 38px; height: 38px; border-radius: 50%; background-color: #ea580c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;'>G</div>
-                    <div>
-                        <div style='font-size: 15px; font-weight: 600; color: {"#f3f4f6" if is_dark else "#111827"};'>Geetha <span style='font-size: 11px; color: #9ca3af; margin-left: 8px;'>Signed out</span></div>
-                        <div style='font-size: 13px; color: {"#9ca3af" if is_dark else "#6b7280"};'>geethamadhuri172008@gmail.com</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            with col_act5:
-                if st.button("Select", key="btn_acc_geetha", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = "Geetha"
-                    st.session_state["user_email"] = "geethamadhuri172008@gmail.com"
-                    st.session_state["user_role"] = "Carrier Dispute Auditor"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
-            st.divider()
-
-            # Account 6: Nithin Banothu
-            col_acc6, col_act6 = st.columns([4, 1])
-            with col_acc6:
-                st.markdown(f"""
-                <div style='display: flex; align-items: center; gap: 14px; padding: 6px 0;'>
-                    <div style='width: 38px; height: 38px; border-radius: 50%; background-color: #f97316; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;'>N</div>
-                    <div>
-                        <div style='font-size: 15px; font-weight: 600; color: {"#f3f4f6" if is_dark else "#111827"};'>Nithin Banothu <span style='font-size: 11px; color: #9ca3af; margin-left: 8px;'>Signed out</span></div>
-                        <div style='font-size: 13px; color: {"#9ca3af" if is_dark else "#6b7280"};'>bnithin638@gmail.com</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            with col_act6:
-                if st.button("Select", key="btn_acc_nithin", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = "Nithin Banothu"
-                    st.session_state["user_email"] = "bnithin638@gmail.com"
-                    st.session_state["user_role"] = "Enterprise Logistics CFO"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
-            st.divider()
-
-            # Option 7: Use another account
-            with st.expander("👤 Use another Google account"):
-                custom_name_g = st.text_input("Your Full Name", value="Alex Mercer", key="google_custom_name")
-                custom_email_g = st.text_input("Google Email Address", placeholder="name@domain.com", key="google_custom_email")
-                if st.button("Sign In with This Account", key="btn_custom_google", type="primary", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Google Account"
-                    st.session_state["user_name"] = custom_name_g if custom_name_g else "Alex Mercer"
-                    st.session_state["user_email"] = custom_email_g if custom_email_g else "alex.mercer@gmail.com"
-                    st.session_state["user_role"] = "Senior Freight Audit Specialist"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("← Back to Log In", use_container_width=True):
-                st.session_state["oauth_chooser"] = None
-                st.rerun()
-                
+            user_g_email = st.text_input("Email or phone", placeholder="Enter your Google email", key="google_visitor_email")
+            user_g_name = st.text_input("Your Name (Optional)", placeholder="Enter your display name", key="google_visitor_name")
+            
+            c_g1, c_g2 = st.columns([1.6, 1])
+            with c_g1:
+                if st.button("Next (Sign In with Google)", type="primary", use_container_width=True, key="btn_submit_google"):
+                    if user_g_email:
+                        display_name = user_g_name if user_g_name else user_g_email.split("@")[0].replace(".", " ").title()
+                        st.session_state["authenticated"] = True
+                        st.session_state["auth_provider"] = "Google Account"
+                        st.session_state["user_name"] = display_name
+                        st.session_state["user_email"] = user_g_email
+                        st.session_state["user_role"] = "Lead Freight Auditor"
+                        st.session_state["oauth_chooser"] = None
+                        st.rerun()
+                    else:
+                        st.error("Please enter your Google email address.")
+            with c_g2:
+                if st.button("← Cancel", use_container_width=True, key="btn_cancel_google"):
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+                    
             st.stop()
 
         # ----------------------------------------------------------------------
@@ -317,33 +178,26 @@ if not st.session_state["authenticated"]:
             provider = st.session_state.get("oauth_chooser")
             st.markdown(f"""
             <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;'>
-                <h2 style='font-size: 26px; font-weight: 700; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Authorize with {provider}</h2>
-                <p style='color: {"#9ca3af" if is_dark else "#6b7280"}; font-size: 14px;'>Select your profile to continue to <b>FreightGuard AI</b></p>
+                <h2 style='font-size: 24px; font-weight: 700; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Sign in with {provider}</h2>
+                <p style='color: {"#9ca3af" if is_dark else "#6b7280"}; font-size: 14px;'>Enter your {provider} account credentials</p>
             </div>
             """, unsafe_allow_html=True)
 
-            acc_choice = st.radio(
-                f"Choose {provider} account:",
-                [
-                    f"Sriram Venkat ({provider} Primary Profile)",
-                    f"Enterprise Logistics Team ({provider} Business Account)",
-                    f"➕ Use another {provider} account..."
-                ]
-            )
-            custom_id = ""
-            if "another" in acc_choice:
-                custom_id = st.text_input(f"Enter your {provider} username or email", key="other_social_id")
+            soc_username = st.text_input(f"Your {provider} Username or Email", placeholder=f"username or email", key=f"input_{provider}_user")
 
             c_s1, c_s2 = st.columns([1.6, 1])
             with c_s1:
                 if st.button(f"Continue with {provider}", type="primary", use_container_width=True):
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = f"{provider} SSO"
-                    st.session_state["user_name"] = "Sriram Venkat" if "Sriram" in acc_choice else (custom_id if custom_id else f"{provider} User")
-                    st.session_state["user_email"] = "srirambv26@gmail.com"
-                    st.session_state["user_role"] = "Lead Freight Auditor"
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
+                    if soc_username:
+                        st.session_state["authenticated"] = True
+                        st.session_state["auth_provider"] = f"{provider} SSO"
+                        st.session_state["user_name"] = soc_username.split("@")[0].title() if "@" in soc_username else soc_username
+                        st.session_state["user_email"] = soc_username if "@" in soc_username else f"{soc_username}@{provider.lower()}.com"
+                        st.session_state["user_role"] = "Lead Freight Auditor"
+                        st.session_state["oauth_chooser"] = None
+                        st.rerun()
+                    else:
+                        st.error(f"Please enter your {provider} account.")
             with c_s2:
                 if st.button("← Cancel", use_container_width=True):
                     st.session_state["oauth_chooser"] = None
@@ -433,19 +287,22 @@ if not st.session_state["authenticated"]:
             """, unsafe_allow_html=True)
 
             # Input fields
-            login_username = st.text_input("Username or Email", placeholder="Username or Email", value="srirambv26@gmail.com", key="input_username_login")
-            login_password = st.text_input("Password", type="password", placeholder="Enter password", value="••••••••••••", key="input_password_login")
+            login_username = st.text_input("Username or Email", placeholder="Username or Email", value="", key="input_username_login")
+            login_password = st.text_input("Password", type="password", placeholder="Enter password", value="", key="input_password_login")
             
             st.markdown(f"<div style='margin-bottom: 16px;'><a href='#' style='color: #0284c7; font-size: 13px; text-decoration: none; font-weight: 500;'>Forgot password</a></div>", unsafe_allow_html=True)
 
             # Deep Green Sign In Button
             if st.button("Sign In", type="primary", use_container_width=True, key="btn_green_signin"):
-                st.session_state["authenticated"] = True
-                st.session_state["auth_provider"] = "Corporate Account"
-                st.session_state["user_name"] = login_username.split("@")[0].title() if "@" in login_username else login_username
-                st.session_state["user_email"] = login_username if "@" in login_username else f"{login_username}@freightguard.ai"
-                st.session_state["user_role"] = "Lead Freight Auditor"
-                st.rerun()
+                if login_username:
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "Corporate Account"
+                    st.session_state["user_name"] = login_username.split("@")[0].title() if "@" in login_username else login_username
+                    st.session_state["user_email"] = login_username if "@" in login_username else f"{login_username}@freightguard.ai"
+                    st.session_state["user_role"] = "Lead Freight Auditor"
+                    st.rerun()
+                else:
+                    st.error("Please enter your username or email.")
 
             # Disclaimer
             st.markdown(f"""
@@ -469,19 +326,22 @@ if not st.session_state["authenticated"]:
                 st.session_state["auth_mode"] = "login"
                 st.rerun()
 
-            reg_fullname = st.text_input("Full Name", placeholder="e.g. Sriram Venkat", key="reg_fullname")
-            reg_email = st.text_input("Username or Email", placeholder="sriram@enterprise.com", key="reg_email")
+            reg_fullname = st.text_input("Full Name", placeholder="e.g. Alex Mercer", key="reg_fullname")
+            reg_email = st.text_input("Username or Email", placeholder="alex@enterprise.com", key="reg_email")
             reg_role = st.selectbox("Role in Supply Chain", ["Senior Freight Auditor", "Logistics CFO", "Carrier Dispute Lead", "Supply Chain Analyst"], key="reg_role")
-            reg_pass = st.text_input("Create Password", type="password", placeholder="Enter secure password", value="SecurePass@2026", key="reg_pass")
+            reg_pass = st.text_input("Create Password", type="password", placeholder="Enter secure password", value="", key="reg_pass")
 
             if st.button("Create Account & Sign In", type="primary", use_container_width=True, key="btn_green_register"):
-                st.session_state["authenticated"] = True
-                st.session_state["auth_provider"] = "Registered Account"
-                st.session_state["user_name"] = reg_fullname if reg_fullname else "Sriram Venkat"
-                st.session_state["user_email"] = reg_email if reg_email else "srirambv26@gmail.com"
-                st.session_state["user_role"] = reg_role
-                st.session_state["auth_mode"] = "login"
-                st.rerun()
+                if reg_email:
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "Registered Account"
+                    st.session_state["user_name"] = reg_fullname if reg_fullname else "Freight Auditor"
+                    st.session_state["user_email"] = reg_email
+                    st.session_state["user_role"] = reg_role
+                    st.session_state["auth_mode"] = "login"
+                    st.rerun()
+                else:
+                    st.error("Please enter an email or username.")
 
         # Quick Auditor Demo for Reviewers
         st.markdown(f"""
@@ -492,8 +352,10 @@ if not st.session_state["authenticated"]:
         if st.button("⚡ 1-Click Instant Auditor Demo Access", use_container_width=True, key="btn_instant_demo"):
             st.session_state["authenticated"] = True
             st.session_state["auth_provider"] = "Instant Candidate Demo"
-            st.session_state["user_name"] = "Sriram Venkat"
-            st.session_state["user_email"] = "srirambv26@gmail.com"
+            st.session_state["user_name"] = "Guest Freight Auditor"
+            st.session_state["user_email"] = "auditor@freightguard.ai"
+            st.session_state["user_role"] = "Lead Evaluation Auditor"
+            st.rerun()
             st.session_state["user_role"] = "Lead Evaluation Auditor"
             st.rerun()
 
