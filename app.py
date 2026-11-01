@@ -132,43 +132,86 @@ if not st.session_state["authenticated"]:
     
     with c_center:
         # ----------------------------------------------------------------------
-        # DYNAMIC GOOGLE SIGN-IN PROMPT (FOR ANY USER / FRIEND'S OWN GOOGLE ACCOUNT)
+        # CLASSIC GOOGLE "CHOOSE AN ACCOUNT" SPLIT-VIEW (MATCHING SCREENSHOT 2)
         # ----------------------------------------------------------------------
         if st.session_state.get("oauth_chooser") == "Google":
+            if "browser_google_accounts" not in st.session_state:
+                st.session_state["browser_google_accounts"] = [
+                    {"name": "Corporate Workspace", "email": "auditor@yottaflex.ai", "initial": "W", "color": "#0284c7", "status": ""},
+                    {"name": "Logistics Carrier Partner", "email": "partner@carrier-freight.com", "initial": "P", "color": "#16a34a", "status": ""},
+                ]
+
             st.markdown(f"""
-            <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 28px 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;'>
-                <div style='display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;'>
-                    <span style='font-size: 28px;'>🔴</span>
-                    <span style='font-size: 18px; font-weight: 600; color: {"#ffffff" if is_dark else "#111827"};'>Google</span>
+            <div style='background: #0a0a0a; border: 1px solid #262626; border-radius: 20px; padding: 32px 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 20px;'>
+                <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 24px;'>
+                    <span style='font-size: 22px;'>🔴</span>
+                    <span style='font-size: 15px; font-weight: 500; color: #d1d5db;'>Sign in with Google</span>
                 </div>
-                <h2 style='font-size: 26px; font-weight: 600; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Sign in with Google</h2>
-                <p style='color: {"#9ca3af" if is_dark else "#6b7280"}; font-size: 14px; margin-bottom: 24px;'>to continue to <b style='color: {"#38bdf8" if is_dark else "#0284c7"};'>FreightGuard AI</b></p>
+                <div style='margin-bottom: 24px;'>
+                    <h1 style='font-size: 34px; font-weight: 600; color: #ffffff; margin: 0 0 6px 0; line-height: 1.2;'>Choose an account</h1>
+                    <p style='color: #9ca3af; font-size: 14px; margin: 0;'>to continue to <b style='color: #38bdf8;'>FreightGuard AI</b></p>
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
-            st.markdown("<br>", unsafe_allow_html=True)
-            user_g_email = st.text_input("Email or phone", placeholder="Enter your Google email", key="google_visitor_email")
-            user_g_name = st.text_input("Your Name (Optional)", placeholder="Enter your display name", key="google_visitor_name")
-            
-            c_g1, c_g2 = st.columns([1.6, 1])
-            with c_g1:
-                if st.button("Next (Sign In with Google)", type="primary", use_container_width=True, key="btn_submit_google"):
-                    if user_g_email:
-                        display_name = user_g_name if user_g_name else user_g_email.split("@")[0].replace(".", " ").title()
+            # Render accounts list
+            for i, acc in enumerate(st.session_state["browser_google_accounts"]):
+                c_a1, c_a2 = st.columns([4, 1])
+                with c_a1:
+                    status_badge = f"<span style='font-size: 11px; color: #9ca3af; margin-left: 8px;'>{acc['status']}</span>" if acc.get('status') else ""
+                    st.markdown(f"""
+                    <div style='display: flex; align-items: center; gap: 14px; padding: 8px 4px;'>
+                        <div style='width: 40px; height: 40px; border-radius: 50%; background-color: {acc['color']}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 16px;'>{acc['initial']}</div>
+                        <div>
+                            <div style='font-size: 15px; font-weight: 600; color: #f3f4f6;'>{acc['name']} {status_badge}</div>
+                            <div style='font-size: 13px; color: #9ca3af;'>{acc['email']}</div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                with c_a2:
+                    if st.button("Sign In", key=f"btn_g_acc_{i}", use_container_width=True):
+                        st.session_state["authenticated"] = True
+                        st.session_state["auth_provider"] = "Google Account"
+                        st.session_state["user_name"] = acc["name"]
+                        st.session_state["user_email"] = acc["email"]
+                        st.session_state["user_role"] = "Lead Freight Auditor"
+                        st.session_state["oauth_chooser"] = None
+                        st.rerun()
+                st.markdown("<hr style='margin: 4px 0 10px 0; border: none; border-top: 1px solid #1f2937;'>", unsafe_allow_html=True)
+
+            # Use Another Account (Expander)
+            with st.expander("👤 Use another account", expanded=False):
+                st.caption("Sign in with any personal Google account or work workspace")
+                new_g_name = st.text_input("Full Name", placeholder="Your Name", key="new_visitor_name")
+                new_g_email = st.text_input("Google Email Address", placeholder="your.name@gmail.com", key="new_visitor_email")
+                
+                if st.button("Continue with This Account", type="primary", use_container_width=True, key="btn_add_and_login_g"):
+                    if new_g_email:
+                        display_name = new_g_name if new_g_name else new_g_email.split("@")[0].replace(".", " ").title()
+                        init_char = display_name[0].upper()
+                        # Save to this visitor's browser state so it remembers on their device
+                        st.session_state["browser_google_accounts"].insert(0, {
+                            "name": display_name,
+                            "email": new_g_email,
+                            "initial": init_char,
+                            "color": "#9333ea",
+                            "status": ""
+                        })
                         st.session_state["authenticated"] = True
                         st.session_state["auth_provider"] = "Google Account"
                         st.session_state["user_name"] = display_name
-                        st.session_state["user_email"] = user_g_email
+                        st.session_state["user_email"] = new_g_email
                         st.session_state["user_role"] = "Lead Freight Auditor"
                         st.session_state["oauth_chooser"] = None
                         st.rerun()
                     else:
-                        st.error("Please enter your Google email address.")
-            with c_g2:
-                if st.button("← Cancel", use_container_width=True, key="btn_cancel_google"):
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
-                    
+                        st.error("Please enter a valid email address.")
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("← Back to Log In", use_container_width=True, key="btn_cancel_google_classic"):
+                st.session_state["oauth_chooser"] = None
+                st.rerun()
+                
             st.stop()
 
         # ----------------------------------------------------------------------
