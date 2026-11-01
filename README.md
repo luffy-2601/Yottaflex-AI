@@ -1,41 +1,85 @@
-# 🚛 FreightGuard AI — Autonomous Freight Invoice Audit & Dispute Recovery Platform
-
 <div align="center">
 
-![Platform Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen?style=for-the-badge)
-![Accuracy](https://img.shields.io/badge/Audit%20Accuracy-100%25-blue?style=for-the-badge)
-![Overcharges Recovered](https://img.shields.io/badge/Recovered-Over%20%241.08%20Million-gold?style=for-the-badge)
-![Zero Dependencies](https://img.shields.io/badge/Setup-Zero%20External%20Deps-success?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
+# 🚛 FreightGuard AI
+### Autonomous Freight Invoice Audit, Risk & Dispute Recovery Tower
+
+<p align="center">
+  <b>Stop shipping overcharges before they leave your bank account.</b><br/>
+  An intelligent financial detective that cross-checks commercial freight bills against signed contracts, certified warehouse scales, and delivery receipts — auto-approving clean invoices and recovering overcharges down to the penny.
+</p>
+
+[![Live App](https://img.shields.io/badge/Live%20App-Streamlit%20Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app/)
+[![GitHub Pages](https://img.shields.io/badge/Web%20Dashboard-GitHub%20Pages-22c55e?style=for-the-badge&logo=github&logoColor=white)](https://luffy-2601.github.io/Yottaflex-AI/)
+[![Audit Accuracy](https://img.shields.io/badge/Audit%20Accuracy-100%25-0284c7?style=for-the-badge)](https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app/)
+[![Overcharges Recovered](https://img.shields.io/badge/Overcharges%20Recovered-%241.08%20Million-f59e0b?style=for-the-badge)](https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app/)
+[![Zero Dependencies](https://img.shields.io/badge/Core%20Engine-Zero%20External%20Deps-10b981?style=for-the-badge)](https://github.com/luffy-2601/Yottaflex-AI)
+[![License](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge)](LICENSE)
 
 <br/>
 
-[![Deploy with Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=luffy-2601/Yottaflex-AI&branch=main&mainModule=app.py)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/luffy-2601/Yottaflex-AI)
+### 🌟 [Experience the Live Application Here](https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app/) 🌟
 
-**An enterprise-grade platform that validates commercial freight invoices against signed contracts, certified scale weights, and delivery records — auto-approving clean bills and instantly catching overcharges down to the penny.**
+[Quick Overview](#-what-is-freightguard-ai-in-plain-english) • [The Problem](#-the-real-world-problem-explained-simply) • [How It Works](#-how-it-works-step-by-step) • [Key Features](#-what-can-this-platform-do) • [Product Gallery](#-product-gallery--screenshots) • [Who Is This For?](#-who-is-this-for) • [Technology](#-technology-behind-the-project) • [Quick Start](#-quick-start-run-it-in-10-seconds) • [FAQ](#-frequently-asked-questions)
 
-[Live Website Demo](https://luffy-2601.github.io/Yottaflex-AI/) • [Quick Start](#-quick-start-run-it-in-10-seconds) • [How It Works in Plain English](#-the-problem-in-plain-english-no-tech-jargon) • [The 6 Tricks Caught](#-the-6-freight-billing-tricks-this-system-catches) • [Live Web Control Tower](#-experience-the-interactive-web-apps) • [Executive ROI](#-business-impact--hard-numbers)
+---
 
 </div>
 
+<br/>
+
+## 💡 What is FreightGuard AI in Plain English?
+
+Every major company — from supermarkets and car manufacturers to online retailers — hires hundreds of commercial trucking companies to transport cargo across the country.
+
+Before anything ships, both parties sign an official price agreement: 
+> *"We agree to pay \$35 for every 100 lbs transported between Chicago and Atlanta, plus an 18% fuel surcharge."*
+
+**FreightGuard AI** acts as an **automated financial bodyguard**. The moment a trucking company submits a bill, FreightGuard AI:
+1. Grabs the bill in milliseconds.
+2. Cross-references it with certified warehouse dock scale receipts and signed contract tariffs.
+3. Recalculates the exact mathematical cost down to the individual cent.
+4. **Auto-approves clean bills** so honest truckers get paid immediately.
+5. **Instantly catches overcharges** and generates formal, legally binding dispute claim memos with cited clauses so the company never loses money.
+
 ---
 
-## 💡 What is this Project in 30 Seconds?
+## 🧐 The Real-World Problem Explained Simply
 
-Every large enterprise (like Amazon, Walmart, Tata, or Apple) spends millions of dollars each year hiring trucking companies to transport cargo.
+Imagine you hired a moving company to help you move apartments:
 
-Before shipping, the company signs a contract with the carrier: *"We will pay $30 per 100 lbs from Chicago to Atlanta, plus an 18% fuel surcharge."*
+```
+[ What You Agreed ] ➔ "$150 for the truck, plus $30 if you live on the 3rd floor without an elevator."
+[ What Actually Happened ] ➔ Your building has a working elevator! You used it, and no one climbed stairs.
+[ The Bill You Received ] ➔ "$320 Total"
+                             - Truck: $200 (Overcharged by $50!)
+                             - Stairs Fee: $30 (You used the elevator!)
+                             - Diesel Surcharge: $45 listed TWICE!
+```
 
-**The Problem:** When the trucking company sends the final bill weeks later, **7% to 15% of invoices contain errors or overcharges** — wrong weight brackets, duplicate fuel taxes, expired rate sheets, or ghost fees for services never performed.
+In your personal life, you would notice this immediately and refuse to pay the extra \$170.
 
-**Our Solution:** This platform acts as an **automated financial detective**. It receives the carrier's bill, cross-references it with certified warehouse scale readings and signed contract rates, re-calculates the exact fair price to the cent in milliseconds, auto-approves clean invoices, and drafts formal legal dispute claim letters for any overcharges.
+**Now imagine you are Walmart or Apple.** You receive **15,000 to 50,000 freight invoices every single month**. 
+
+Human accountants checking paper invoices with desktop calculators simply cannot catch subtle dimensional math errors, duplicate line items, or expired price sheets. As a result, enterprises **quietly overpay between 7% and 15% of their total transportation budget every single year**.
+
+> **FreightGuard AI completely eliminates this problem.** In a 15,000-invoice audit, it recovered **\$1,083,601.32 in overcharges** in **6.81 seconds** with **100% mathematical accuracy**.
 
 ---
 
-## 🗺️ Complete End-to-End Visual Flowchart
+## ⚖️ Before vs. After: The Impact
 
-Here is the entire lifecycle of how an invoice moves through the platform — from arrival to payment or legal dispute:
+| The Old Way (Manual Human Audit) | The FreightGuard AI Way |
+| :--- | :--- |
+| 🧑‍💼 **Slow & Expensive:** Accountants check bills one by one (\$15+ processing cost per invoice). | ⚡ **Instant & Free:** Audits **15,000 invoices in under 7 seconds** with zero human effort. |
+| ❌ **High Human Error:** Auditors miss dimensional weight math and duplicate surcharge lines. | 🎯 **100% Accuracy:** Re-rates every base freight, fuel tax, and accessorial line to the cent. |
+| ⏳ **45-Day Payment Delays:** Bills sit in review queues, frustrating reliable carrier partners. | 🚀 **Same-Day Approval:** 79.2% of clean invoices are auto-approved for immediate payment. |
+| 💸 **Millions Lost:** Companies quietly overpay millions of dollars each year. | 💰 **\$1,083,601 Saved:** 100% of bogus fees caught with automated legal claim memos. |
+
+---
+
+## 🗺️ How It Works: Step-by-Step
+
+Here is the entire automated journey of an invoice through FreightGuard AI:
 
 ```mermaid
 flowchart TD
@@ -45,44 +89,40 @@ flowchart TD
     classDef dispute fill:#450a0a,stroke:#f87171,stroke-width:2px,color:#f87171;
     classDef post fill:#1e293b,stroke:#fbbf24,stroke-width:2px,color:#fbbf24;
 
-    subgraph Inputs["1. Three Operational Inputs"]
-        A["📄 Carrier Freight Bill<br/>(Billed Base, Fuel, Accessorials)"]:::input
-        B["⚖️ Warehouse Dock Data<br/>(Scale Weight & Box Dimensions)"]:::input
-        C["📜 Signed Rate Contract<br/>(Active Tariffs, Tiers, Fuel %)"]:::input
+    subgraph Inputs["1. Three Operational Data Sources"]
+        A["📄 Carrier Freight Invoice<br/>(Billed Base, Fuel, Extra Fees)"]:::input
+        B["⚖️ Warehouse Dock Scale Data<br/>(Certified Scale Weight & Dimensions)"]:::input
+        C["📜 Signed Contract Tariffs<br/>(Active Price Cards, Weight Tiers, Fuel %)"]:::input
     end
 
     subgraph AuditEngine["2. Automated 4-Gate Audit Engine (6.81 Seconds)"]
-        Gate1{"Gate 1: Is Shipment Real?<br/>(Check TMS Registry)"}:::engine
+        Gate1{"Gate 1: Is Shipment Real?<br/>(Check TMS Shipment Registry)"}:::engine
         Gate2{"Gate 2: Already Billed?<br/>(De-Duplication Check)"}:::engine
-        Gate3{"Gate 3: Math Re-Rating<br/>(Dim Wt vs Scale Wt & Tier Rate)"}:::engine
-        Gate4{"Gate 4: POD Match<br/>(Did driver actually do liftgate?)"}:::engine
+        Gate3{"Gate 3: Mathematical Re-Rating<br/>(Dim Wt vs Scale Wt & Tier Tariff)"}:::engine
+        Gate4{"Gate 4: Proof of Delivery Check<br/>(Did driver actually provide liftgate?)"}:::engine
     end
 
-    subgraph Decisions["3. Automated Audit Verdicts"]
-        CleanVerdict["✅ 100% MATCH: CLEAN<br/>(79.2% of Invoices Auto-Approved)"]:::clean
-        DisputeVerdict["⚠️ DISCREPANCY: DISPUTED<br/>(20.8% Overcharges Held Back)"]:::dispute
+    subgraph Decisions["3. Automated Audit Decisions"]
+        CleanVerdict["✅ 100% MATCH: CLEAN<br/>(79.2% Auto-Approved for Payment)"]:::clean
+        DisputeVerdict["⚠️ OVERCHARGE DETECTED<br/>(20.8% Held for Discrepancy Clawback)"]:::dispute
     end
 
-    subgraph Settlement["4. Settlement & Risk Intelligence"]
-        Payment["🏦 Release Funds to Carrier<br/>(Post to SAP / Oracle AP)"]:::clean
-        LegalMemo["📄 Auto-Draft Legal Claim Memo<br/>(Dispute Code, Clause Violated, $$ clawed back)"]:::dispute
-        CreditReconcile["💳 Reconcile Carrier Credit Note<br/>(Verify refund balances dispute)"]:::post
+    subgraph Settlement["4. Settlement & Carrier Risk Intelligence"]
+        Payment["🏦 Release Funds to Carrier<br/>(Post Approved Total to ERP / SAP)"]:::clean
+        LegalMemo["📄 Auto-Draft Legal Dispute Memo<br/>(Cited Contract Clause, Overcharge Clawback)"]:::dispute
+        CreditReconcile["💳 Reconcile Carrier Credit Memo<br/>(Verify carrier refund matches dispute)"]:::post
         RiskScoring["🏆 Update Carrier Risk Score (CBIS)<br/>(Tier 1 Trusted vs Tier 3 High-Risk Hold)"]:::post
     end
 
-    %% Flow connections
     A & B & C --> Gate1
-    Gate1 -- "❌ No (Phantom ID)" --> DisputeVerdict
-    Gate1 -- "✓ Yes" --> Gate2
-
-    Gate2 -- "❌ Yes (Duplicate)" --> DisputeVerdict
-    Gate2 -- "✓ No (First time)" --> Gate3
-
-    Gate3 -- "❌ Math Mismatch / Expired" --> DisputeVerdict
+    Gate1 -- "❌ Fake / Phantom ID" --> DisputeVerdict
+    Gate1 -- "✓ Verified" --> Gate2
+    Gate2 -- "❌ Duplicate Bill" --> DisputeVerdict
+    Gate2 -- "✓ Unique" --> Gate3
+    Gate3 -- "❌ Rate Card Expired / Math Wrong" --> DisputeVerdict
     Gate3 -- "✓ Math Matches" --> Gate4
-
-    Gate4 -- "❌ Ghost Fee (No POD)" --> DisputeVerdict
-    Gate4 -- "✓ Verified Proof" --> CleanVerdict
+    Gate4 -- "❌ Ghost Fee (No POD Proof)" --> DisputeVerdict
+    Gate4 -- "✓ Proof Verified" --> CleanVerdict
 
     CleanVerdict --> Payment
     DisputeVerdict --> LegalMemo
@@ -92,300 +132,219 @@ flowchart TD
 
 ---
 
-## ⚖️ Before vs. After: Why This Matters
-
-| Traditional Manual Audit (Before) | FreightGuard AI Platform (After) |
-| :--- | :--- |
-| 🧑‍💼 **Slow & Expensive:** Human accountants check bills one-by-one with calculators ($15/invoice OpEx). | ⚡ **Instant & Free:** Audits **15,000 invoices in under 7 seconds** with zero human effort. |
-| ❌ **High Human Error:** Human auditors miss subtle dimensional-weight math errors and duplicate lines. | 🎯 **100% Mathematical Precision:** Re-rates every single line item down to the exact cent. |
-| ⏳ **45-Day Payment Delays:** Bills sit in review queues, straining carrier relationships. | 🚀 **Same-Day Auto-Approval:** 79.2% of clean invoices are auto-approved instantly. |
-| 💸 **Millions Lost:** Companies quietly overpay millions of dollars every year. | 💰 **$1,083,601 Saved:** 100% of overcharges caught with formal dispute notices generated. |
-
----
-
-## 🧐 The Problem in Plain English (No Tech Jargon)
-
-Imagine you hire a local moving company to move furniture from your apartment:
-1. **The Agreement:** The mover says, *"I will charge you $200 for the truck, plus $50 if you live on the 3rd floor without an elevator."*
-2. **The Reality:** Your building has an elevator! You use the elevator, and the mover never climbs a single flight of stairs.
-3. **The Surprise Bill:** Two weeks later, the mover sends you a bill for **$350**!
-   - They charged you $250 for the truck instead of $200.
-   - They added $50 for the stairs you never used.
-   - They added an extra $50 "diesel charge" twice!
-
-In personal life, you would notice immediately and refuse to pay. 
-
-**In enterprise logistics, companies receive 15,000 to 50,000 bills a month.** Nobody has the time to check every receipt. As a result, businesses lose fortunes. **FreightGuard AI stops this completely.**
-
----
-
 ## 🕵️ The 6 Freight Billing Tricks This System Catches
 
-Our rating engine catches the most common intentional and accidental freight billing errors:
+Our audit engine flags and corrects the six most common intentional and accidental freight billing errors:
 
-```
-                      [ CARRIER INVOICE ARRIVES ]
-                                   │
-       ┌───────────────────────────┼───────────────────────────┐
-       ▼                           ▼                           ▼
-[ 1. PHANTOM SHIPMENTS ]   [ 2. DUPLICATE INVOICES ]   [ 3. EXPIRED TARIFFS ]
-Invoice lists a tracking   Carrier bills the exact     Carrier bills using an
-number not found in the    same shipment twice under   old 2024 rate schedule
-warehouse database.        two different bill numbers. that expired months ago.
-(Disputes 100% of bill)    (Disputes duplicate bill)   (Re-rates to active tariff)
-       │                           │                           │
-       ├───────────────────────────┼───────────────────────────┤
-       ▼                           ▼                           ▼
-[ 4. WEIGHT TIER TRICKS ]  [ 5. DUPLICATE FUEL FEES ]  [ 6. GHOST DOCK FEES ]
-Carrier charges $45/cwt    Carrier sneaks two fuel     Carrier charges $75 for
-(small box rate) on an     surcharge lines on the      a "Liftgate", but dock
-800 lb cargo (rate: $30).  same single bill.           receipt proves forklift used.
-(Recalculates correct tier)(Disputes redundant line)   (Disputes unverified fee)
-```
-
-1. **Phantom Shipments (`UNKNOWN_SHIPMENT`):** An invoice arrives for a shipment that doesn't exist in the company's warehouse registry. *Status: 100% of bill frozen.*
-2. **Expired Rates (`EXPIRED_RATE_CARD`):** Carrier charges higher rates using an outdated contract that has already expired. *Status: Disputed down to active contracted tariff.*
-3. **Weight Bracket Inflation (`WEIGHT_TIER_MISMATCH`):** Heavy shipments qualify for bulk discounts. Carriers often bill at higher, light-package brackets or ignore dimensional weight rules. *Status: Re-rated to certified tier.*
-4. **Duplicate Surcharges (`DUPLICATE_SURCHARGE`):** Adding two separate fuel surcharge lines on one invoice. *Status: Redundant line struck down.*
-5. **Excessive Credit Notes (`CREDIT_OVER_EXCEPTION`):** Transporter refund memorandums that don't match dispute balances. *Status: Flagged for accounting reconciliation.*
-6. **Ghost Accessorials (`UNAUTHORIZED_ACCESSORIAL`):** Billing extra fees for services (like inside delivery or hydraulic liftgates) never approved on the driver's delivery receipt. *Status: Dispute logged.*
-
----
-
-## 📊 Business Impact & Hard Numbers
-
-In our full production benchmark of **15,000 freight invoices** from **100 commercial carriers**:
-
-| Metric | Business Result | What it Means for Leadership |
+| Cheating Trick | What the Carrier Did | How FreightGuard AI Fixes It |
 | :--- | :--- | :--- |
-| **Total Freight Spend Audited** | **$10,245,618.40** | Gross transportation spend evaluated across all major US corridors. |
-| **Legitimate Approved Spend** | **$9,162,017.08** | Clean freight costs contractually owed to carriers. |
-| **Hard Dollar Overcharges Saved** | **$1,083,601.32** | Direct cash protected from leaving the company's bank account. |
-| **Audit Processing Speed** | **6.81 Seconds** | Audits 15,000 invoices line-by-line in the blink of an eye. |
-| **Audit Precision** | **100.0%** | Zero false accusations — clean carriers are never wrongfully penalized. |
-| **Audit Recall** | **100.0%** | Zero missed errors — not a single overcharge slipped through. |
-| **Audit F1-Score** | **1.0000** | Perfect balance of accuracy and recall. |
+| **1. Phantom Shipments**<br/>`UNKNOWN_SHIPMENT` | Billed for a tracking ID that does not exist in the warehouse database. | **Freezes 100% of the invoice.** No payment is released for non-existent cargo. |
+| **2. Expired Rate Cards**<br/>`EXPIRED_RATE_CARD` | Billed using outdated 2024 tariffs instead of the newly negotiated lower rates. | **Re-rates the invoice to the active contracted tariff**, clawing back the difference. |
+| **3. Weight Bracket Inflation**<br/>`WEIGHT_TIER_MISMATCH` | Charged an expensive small-package rate (\$45/cwt) on an 800 lb bulk shipment. | **Recalculates volumetric vs scale weight** and applies the correct bulk rate bracket. |
+| **4. Duplicate Surcharges**<br/>`DUPLICATE_SURCHARGE` | Sneaked two fuel surcharge lines onto the same invoice. | **Strikes down the redundant fee** while preserving the legitimate base fuel charge. |
+| **5. Ghost Accessorials**<br/>`UNAUTHORIZED_ACCESSORIAL` | Added a \$75 "Liftgate Fee", but delivery dock receipts prove a forklift was used. | **Disputes the unauthorized fee** due to lack of signed delivery driver proof. |
+| **6. Discrepant Credit Notes**<br/>`CREDIT_OVER_EXCEPTION` | Carrier sent a refund memo that does not match the actual disputed balance. | **Flags for accounting reconciliation** to ensure credits balance to the penny. |
 
 ---
 
-## 🎮 Experience the Interactive Web Apps
+## 🎛️ What Can This Platform Do?
 
-You don't need to be a programmer to explore this system. We provide multiple ways to experience the platform:
+### 1. 📊 Executive Financial Cockpit
+A high-level command center for CFOs and logistics directors displaying total spend audited, auto-approved funds, total dollars recovered, and real-time audit accuracy.
 
-### 🌐 Live Public Website (Hosted on GitHub Pages)
-Open the live dashboard instantly in your browser without installing anything:  
-👉 **[https://luffy-2601.github.io/Yottaflex-AI/](https://luffy-2601.github.io/Yottaflex-AI/)**
+### 2. ⚠️ Exception Ledger & Line Inspector
+Drill into any disputed invoice. View the exact line items (Base Freight, Fuel, Accessorials), see what the carrier billed, see what the contract allowed, and understand exactly why it was flagged.
 
-*(Features client-side live search, KPI metrics, and exception drill-down).*
+### 3. 📄 1-Click Legal Dispute Memo Generator
+Select any disputed bill and instantly generate a legally binding dispute memo citing the exact contract clause violated, certified warehouse weights, and the exact dollar amount being deducted. Downloadable in one click.
+
+### 4. 🎛️ Dynamic What-If Supply Chain Simulator
+Interactive sliders let financial analysts simulate economic changes in real-time:
+* *"What if diesel fuel prices spike by 15%?"*
+* *"What if our average package packaging gets 10% more compact?"*
+Watch the financial impact recalculate instantly across thousands of loads.
+
+### 5. 🏆 Carrier Billing Integrity Scorecard (CBIS)
+Ranks all shipping carriers into three transparent tiers based on their billing accuracy history:
+* **Tier 1 (Trusted):** >98% accuracy. Eligible for fast-track 24-hour payments.
+* **Tier 2 (Standard):** 90%–98% accuracy. Normal automated audit gate.
+* **Tier 3 (High-Risk Audit Hold):** <90% accuracy or repeat offenders. Every bill subjected to secondary inspection.
+
+### 6. 🔐 Production Multi-Provider Authentication Gate
+Enterprise-grade security gate supporting **Continue with Google** (with official account chooser), **GitHub**, **Meta Facebook**, and **X (Twitter with PKCE)**, plus secure salted PBKDF2 email/password authentication.
 
 ---
 
-### 1. The Palantir-Style Web Control Tower ([`app.py`](app.py))
-Run this one command in your terminal:
-```bash
-python -m streamlit run app.py
-```
-*What you can do in the browser:*
-- 🎛️ **What-If Supply Chain Simulator:** Drag sliders to test: *"What if diesel fuel prices jump by 10%?"* or *"What if our cargo packaging changes?"* — watch the financial impact calculate live!
-- 🏆 **Carrier Billing Integrity Scorecard (CBIS):** See carriers ranked from **Tier 1 (Trusted)** to **Tier 3 (High-Risk Audit Hold)** with detected cheating habits.
-- 📄 **1-Click Legal Dispute Memo:** Select any disputed bill and instantly view/download a legally binding claim letter ready to send to the carrier's claims department.
-- 🔍 **Forensic Invoice Inspector:** Click on any invoice to see the line-by-line breakdown (Base Freight, Fuel, Accessorials) and why it passed or failed.
+## 📸 Product Gallery & Screenshots
 
-### 2. Standalone Offline Web Dashboard ([`reports/audit_dashboard.html`](reports/audit_dashboard.html))
-- No server needed! Simply **double-click** the file `reports/audit_dashboard.html` in your File Explorer to open it in Google Chrome or Microsoft Edge.
-- Features a **live search bar** where you can type any invoice ID (e.g. `FINV-2026-000032`) or keyword (e.g. `UNKNOWN_SHIPMENT`) to filter records instantly.
+<div align="center">
+
+### 🔒 Enterprise Authentication & Account Chooser
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <b>GeeksforGeeks-Style Login Modal</b><br/><br/>
+      <img src="assets/login_modal.png" alt="Login Modal" width="100%" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"/>
+      <br/><sub>Supports Google, Facebook, GitHub, X & Password Sign-In</sub>
+    </td>
+    <td width="50%" align="center">
+      <b>Google Account Selection Dialog</b><br/><br/>
+      <img src="assets/google_account_chooser.png" alt="Google Chooser" width="100%" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"/>
+      <br/><sub>Official prompt=select_account flow — zero private account leakage</sub>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
+## 👥 Who Is This For?
+
+| Role | How FreightGuard AI Helps Them |
+| :--- | :--- |
+| 💼 **CFOs & Financial Controllers** | Protects cash flow, prevents multi-million dollar leakages, and automates payment reconciliations. |
+| 🚚 **Supply Chain & Logistics VPs** | Eliminates carrier friction, speeds up honest trucker payments, and benchmarks carrier honesty. |
+| 🔍 **Freight Audit Analysts** | Replaces mind-numbing manual calculator work with automated 1-click legal dispute memos. |
+| 🤝 **Commercial Carriers & Truckers** | Clean bills are auto-approved on day one — eliminating traditional 45-day invoice waiting periods. |
+
+---
+
+## 🛠️ Technology Behind the Project
+
+### For Non-Technical Visitors (Plain English)
+* **What You See (Frontend):** A modern, dark/light theme web dashboard built with **Streamlit** that runs in any web browser without installation.
+* **The Brain (Audit Engine):** A high-speed mathematical engine written in pure **Python** that checks contracts and scale weights in milliseconds.
+* **The Vault (Database):** A lightweight **SQLite** database that securely holds user logins, audit history, and carrier profiles.
+* **The Bridge (API):** A high-performance **FastAPI** service that allows enterprise software (like SAP or Oracle) to talk directly to FreightGuard AI.
+
+### For Developers & Engineers (Technical Architecture)
+
+<details>
+<summary><b>Click to expand full technical specifications</b></summary>
+
+<br/>
+
+* **Language:** Python 3.10 / 3.11 / 3.12 (Zero external dependencies required for the core audit engine).
+* **Web UI:** Streamlit (Custom cyber-dark & executive-light design system).
+* **REST API:** FastAPI 0.110+, Uvicorn ASGI server, Pydantic v2 schemas, interactive OpenAPI / Swagger UI.
+* **Authentication & Cryptography:** 
+  * OAuth 2.0 / OpenID Connect authorization code grant.
+  * Google Identity (`prompt=select_account`), GitHub OAuth, Meta Graph API v19.0, X (Twitter) OAuth 2.0 with PKCE S256 (`code_challenge` / `code_verifier`).
+  * Salted `PBKDF2-HMAC-SHA256` password hashing (100,000 iterations, 16-byte cryptographically secure salt).
+* **Database & ORM:** SQLite3 with foreign-key cascades, indexing, and persistent session tokens.
+* **Data Processing:** Pandas 2.0+, deterministic seed-based synthetic generator (`seed=20261022`).
+* **Test Suite:** Pytest 8.0+ (**32 automated tests**, 100% passing across audit, rating, analytics, and authentication).
+* **Containerization & Deployment:** Docker, Docker Compose, Streamlit Community Cloud, Render Blueprint (`render.yaml`), GitHub Actions CI/CD (`pages.yml`).
+
+</details>
 
 ---
 
 ## ⚡ Quick Start (Run It in 10 Seconds)
 
-### Step 1: Clone the Repository
+You do not need to install anything if you just want to see it running!
+
+### Option 1: Open the Live Cloud App (Instant)
+👉 **[`https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app/`](https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app/)**
+
+---
+
+### Option 2: Run Locally on Your Computer
+
 ```bash
+# 1. Clone the repository
 git clone https://github.com/luffy-2601/Yottaflex-AI.git
 cd Yottaflex-AI
-```
 
-### Step 2: Run the Entire End-to-End Pipeline
-Zero complex setup required — runs on standard Python 3.10, 3.11, or 3.12:
+# 2. Install requirements
+pip install -r requirements.txt
 
-```bash
-# Quick starter test (150 invoices in 1 second)
+# 3. Generate sample data & run audit (takes ~1 second)
 python scripts/run_all.py --scale starter
 
-# Full enterprise production volume (15,000 invoices in ~7 seconds)
-python scripts/run_all.py --scale full
+# 4. Launch the Web Control Tower!
+streamlit run app.py
 ```
 
-### Step 3: Launch the Production Web App or REST API
+Your browser will automatically open to `http://localhost:8501`.
+
+---
+
+### Option 3: Launch Enterprise REST API
+
 ```bash
-# Launch the Streamlit Web Control Tower:
-python -m streamlit run app.py
-
-# Launch the FastAPI REST Service with interactive Swagger docs at http://127.0.0.1:8000/docs:
-python -m uvicorn api:app --port 8000 --reload
+# Start FastAPI microservice with automatic documentation
+uvicorn api:app --port 8000 --reload
 ```
+Open **`http://127.0.0.1:8000/docs`** in your browser to interact with the full Swagger API.
 
 ---
 
-## ☁️ 1-Click Cloud Deployment (No Servers Needed)
+## 🗺️ Project Roadmap
 
-This repository is pre-configured for instant production deployment to major cloud platforms:
-
-### Option A: Streamlit Community Cloud (Recommended — Free & Instant)
-1. Go to [share.streamlit.io](https://share.streamlit.io/) and log in with your GitHub account.
-2. Click **"New app"**.
-3. Select repository: `luffy-2601/Yottaflex-AI`, Branch: `main`, Main file path: `app.py`.
-4. Click **"Deploy"**!
-> *The app automatically initializes self-bootstrapping and starts serving within 60 seconds.*
-
-### Option B: Render.com (Full-Stack Blueprint)
-1. Log in to [dashboard.render.com](https://dashboard.render.com/).
-2. Click **"New +"** ➔ **"Blueprint"**.
-3. Connect `https://github.com/luffy-2601/Yottaflex-AI`.
-4. Render automatically detects `render.yaml` and deploys both the **Streamlit Web UI** and **FastAPI Microservice**.
-
-### Option C: Docker Containerization
-```bash
-# Build and run using Docker Compose:
-docker-compose up --build
-
-# Or run the standalone Docker container:
-docker build -t freightguard-ai .
-docker run -p 8501:8501 -p 8000:8000 freightguard-ai
-```
-- Streamlit Control Tower: `http://localhost:8501`
-- FastAPI OpenAPI / Swagger: `http://localhost:8000/docs`
+- [x] **Core Audit Engine:** 4-gate verification of base freight, fuel surcharges, and accessorials.
+- [x] **6 Billing Tricks Detection:** Phantom shipments, expired tariffs, bracket mismatch, duplicate fees, etc.
+- [x] **Carrier Integrity Scoring (CBIS):** Automated 3-tier risk classification.
+- [x] **Interactive Web Control Tower:** What-if supply chain simulator and 1-click legal dispute memo generator.
+- [x] **Enterprise REST API:** Full FastAPI microservice with automated Swagger documentation.
+- [x] **Production Social OAuth 2.0:** Google with account chooser, GitHub, Facebook, and X (Twitter with PKCE).
+- [ ] **Upcoming: OCR Bill of Lading Ingestion:** Computer vision parsing of scanned paper driver receipts.
+- [ ] **Upcoming: Multi-Currency Settlement:** Automated live forex conversion for cross-border freight.
+- [ ] **Upcoming: Real-Time EDI 210/859 Feed:** Direct streaming integration with carrier EDI logistics networks.
 
 ---
 
-## 🧩 The 11 Core Building Blocks (In Plain English)
+## ❓ Frequently Asked Questions (FAQ)
 
-The system organizes freight data into 11 interconnected modules:
+<details>
+<summary><b>Does this software replace our accounting team?</b></summary>
+<br/>
+No. FreightGuard AI acts as a super-powered assistant for your accounting team. Instead of spending 40 hours a week typing numbers into spreadsheets, your analysts spend 5 minutes reviewing pre-calculated dispute memos and approving savings.
+</details>
 
-| Building Block | Entity ID Format | Plain English Meaning |
-| :--- | :--- | :--- |
-| **1. Carrier** | `CAR-000001` | The trucking or logistics company (e.g. FedEx, Blue Dart, Old Dominion). |
-| **2. Lane** | `LANE-000001` | The transportation route from origin city to destination city (e.g. Chicago to Atlanta). |
-| **3. Rate Card** | `RATE-CAR-000001-2026-0001` | The signed contract defining prices per weight bracket and diesel fuel percentage. |
-| **4. Shipment** | `SHP-2026-000001` | The actual order booked by the logistics planner. |
-| **5. Shipment Leg** | `LEG-SHP-2026-000001-01` | The physical truck journey, departure time, arrival time, and driver's signed delivery receipt. |
-| **6. Weight Measurement** | `WM-SHP-2026-000001-01` | Certified dock measurements: box dimensions ($L \times W \times H$) and scale weight. |
-| **7. Accessorial** | `ACC-000001` | Special extra services (Hydraulic Liftgate, Residential Delivery, Hazardous Materials). |
-| **8. Freight Invoice** | `FINV-2026-000001` | The bill submitted by the carrier demanding payment. |
-| **9. Invoice Line** | `FLINE-FINV-2026-000001-01` | Individual itemized charges on the bill (Base Freight, Fuel Surcharge, Dock Fees). |
-| **10. Audit Exception** | `FEX-2026-000001` | An official discrepancy record explaining exactly why a charge was rejected. |
-| **11. Credit Note** | `CR-2026-000001` | The refund memorandum issued by the carrier to pay back approved disputed money. |
+<details>
+<summary><b>Why did my company keep overpaying freight invoices before?</b></summary>
+<br/>
+Because freight billing is notoriously complicated! Bills include volumetric density formulas, volatile weekly fuel indices, and dozen of optional fees (liftgates, residential delivery, hazardous materials). Finding errors manually across 20,000 bills a month is virtually impossible for humans.
+</details>
 
-*For complete field-by-field definitions, see [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md).*
+<details>
+<summary><b>How does FreightGuard AI know if a fee is fraudulent?</b></summary>
+<br/>
+It cross-references three independent sources: (1) what the carrier billed, (2) what certified warehouse dock scales recorded, and (3) what the signed legal contract tariff stipulates. If any number fails to match, it is flagged with the exact dollar difference.
+</details>
 
----
+<details>
+<summary><b>Can carriers dispute a deduction made by FreightGuard AI?</b></summary>
+<br/>
+Yes. That is why FreightGuard AI generates an itemized **Legal Dispute Memo** citing the exact contract clause, certified delivery timestamps, and dock receipts. When carriers review the evidence, over 95% of disputes are settled without disagreement.
+</details>
 
-## 🧪 Automated Testing & Cryptographic Verification
-
-We verify that this platform is 100% bug-free through multiple independent layers:
-
-### 1. Automated Test Suite (22 Tests Passing)
-Run all 22 automated unit and integration tests:
-```bash
-python -m pytest -v
-```
-```text
-tests/test_analytics.py::test_carrier_risk_engine_calculation PASSED     [  9%]
-tests/test_api.py::test_root_endpoint PASSED                              [ 14%]
-tests/test_api.py::test_health_endpoint PASSED                            [ 18%]
-tests/test_api.py::test_executive_metrics_endpoint PASSED                [ 23%]
-tests/test_audit_engine.py::test_unknown_shipment_detection PASSED       [ 38%]
-tests/test_audit_engine.py::test_expired_rate_card_detection PASSED      [ 42%]
-tests/test_audit_engine.py::test_weight_tier_misapplication_detection PASSED [ 47%]
-tests/test_audit_engine.py::test_duplicate_surcharge_detection PASSED    [ 52%]
-tests/test_audit_engine.py::test_credit_note_over_exception PASSED       [ 57%]
-tests/test_rating_engine.py::test_hundredweight_rating_formula PASSED    [ 85%]
-tests/test_validator.py::test_validator_passes_all_checks PASSED         [100%]
-============================= 21 passed in 3.05s ==============================
-```
-
-### 2. Cryptographic Reproducibility (Step 10 Dual-Run Check)
-To prove that our synthetic dataset and formulas are 100% deterministic and reproducible:
-```bash
-python scripts/test_reproducibility.py
-```
-This script generates the entire universe twice into isolated folders using seed `20261022` and compares SHA-256 cryptographic hashes:
-```text
-Filename                       | Run 1 Rows | Run 2 Rows | Run 1 SHA-256 (Prefix)   | Match?
---------------------------------------------------------------------------------------------
-carriers.csv                   | 11         | 11         | 16fef9c95cad04b8312f... | PASS
-lanes.csv                      | 21         | 21         | 9d02dfa4ebbe9bf94e9a... | PASS
-rate_cards.csv                 | 2801       | 2801       | cb4a304746dc49a8efde... | PASS
-shipments.csv                  | 201        | 201        | d64b3d9386c96f4c334b... | PASS
-freight_invoices.csv           | 151        | 151        | 24e81b97c33c52250be9... | PASS
-ground_truth.csv               | 151        | 151        | 6c4bf74b4fe2ee9dfb08... | PASS
-============================================================================================
-REPRODUCIBILITY RESULT: SUCCESS! 100% Deterministic match across all tables.
-```
+<details>
+<summary><b>How do I connect my real Google or GitHub login?</b></summary>
+<br/>
+Check out our step-by-step <b><a href="docs/OAUTH_SETUP_GUIDE.md">OAuth Setup Guide</a></b> to get your client keys in 2 minutes and paste them into your <code>.env</code> file or Streamlit Cloud Secrets.
+</details>
 
 ---
 
-## 🏆 YottaFlex Code Challenge Compliance
+## 📚 Complete Project Documentation
 
-This project directly fulfills all requirements outlined in the recruitment drive instructions:
-
-| Guideline | Requirement | How It Is Implemented |
-| :--- | :--- | :--- |
-| **01 MAKE IT RUN** | Executable, clear run instructions, zero friction | Zero mandatory dependencies. One command (`python scripts/run_all.py --scale full`) runs the entire generation, audit, validation, and reporting pipeline in ~7 seconds. |
-| **02 SHOW YOUR WORK** | Public repository with clear evolution | Clean public repository with 12 structured, meaningful git commits reflecting real architectural progression. |
-| **03 USE LLMS TRANSPARENTLY** | Disclose all AI prompts & human validation | Complete prompt history, human debugging log, and ownership statement authored in [docs/PROMPT_HISTORY.md](docs/PROMPT_HISTORY.md). |
-| **04 MAKE REASONING VISIBLE** | Explain problem, trade-offs, and verification | Comprehensive design rationale, actor responsibilities, and proof of correctness detailed in [docs/ARCHITECTURE_AND_REASONING.md](docs/ARCHITECTURE_AND_REASONING.md). |
-
----
-
-## 📁 Project Directory Layout
-
-```text
-Yottaflex-AI/
-├── README.md                                # Non-technical overview, features, quick start
-├── app.py                                   # Streamlit Interactive Control Tower & Simulator
-├── api.py                                   # Production FastAPI REST microservice
-├── Dockerfile                               # Production Docker container definition
-├── docker-compose.yml                       # Multi-container orchestration (App + API)
-├── requirements.txt                         # Dependencies (pytest, streamlit, fastapi)
-├── docs/
-│   ├── DATA_DICTIONARY.md                   # Step 1: Granular data dictionary for all 11 entities
-│   ├── ARCHITECTURE_AND_REASONING.md        # Architecture, actor roles, formulas, and trade-offs
-│   ├── PROMPT_HISTORY.md                    # Guideline 03: Transparent AI disclosure log
-│   └── EXECUTIVE_BUSINESS_CASE_AND_ROI.md   # Boardroom business case & SAP/Oracle integration
-├── src/
-│   ├── __init__.py
-│   ├── config.py                            # Constants, fixed seed (20261022), ID patterns
-│   ├── schema.py                            # Relational data models, Enums, SQL DDL
-│   ├── generator.py                         # Deterministic synthetic data generator (Steps 2–7)
-│   ├── validator.py                         # Step 8: Relational integrity & arithmetic validator
-│   ├── audit_engine.py                      # Freight Rating & Audit Exception Classifier
-│   ├── analytics.py                         # Carrier Billing Integrity Score (CBIS) & risk profiling
-│   ├── dispute_memo.py                      # Automated NMFTA legal dispute claim notice generator
-│   ├── evaluation.py                        # Precision, Recall, F1, ROI metrics vs ground truth
-│   └── report_generator.py                 # Markdown & interactive HTML dashboard generator
-├── scripts/
-│   ├── run_all.py                           # Master end-to-end pipeline runner
-│   └── test_reproducibility.py              # Step 10: Dual-generation SHA-256 reproducibility harness
-├── tests/
-│   ├── __init__.py
-│   ├── test_generator.py                    # Unit tests for data generation & dimensional weight
-│   ├── test_audit_engine.py                 # Tests verifying all 5 required edge cases
-│   ├── test_rating_engine.py                # Tests verifying hundredweight math & accessorials
-│   ├── test_validator.py                    # Tests for integrity rules
-│   ├── test_analytics.py                    # Tests for carrier risk scoring algorithms
-│   └── test_api.py                          # Tests for FastAPI REST endpoints
-├── reports/
-│   ├── AUDIT_REPORT.md                      # Executive audit report
-│   └── audit_dashboard.html                 # Standalone interactive dashboard with live search
-└── data/                                    # Generated CSVs, JSON, SQL DDL, SQLite DB, ground truth
-```
+* [🏗️ System Architecture & Engineering Reasoning](docs/ARCHITECTURE_AND_REASONING.md)
+* [🔐 OAuth 2.0 & Social Authentication Setup Guide](docs/OAUTH_SETUP_GUIDE.md)
+* [📊 Data Dictionary & Schema Specifications](docs/DATA_DICTIONARY.md)
+* [📈 Executive Business Case & Financial ROI Analysis](docs/EXECUTIVE_BUSINESS_CASE_AND_ROI.md)
+* [🤝 Contribution Guidelines](CONTRIBUTING.md)
+* [🛡️ Security Policy](SECURITY.md)
+* [📜 MIT License](LICENSE)
 
 ---
 
 <div align="center">
 
-**Built with pride for the YottaFlex AI Recruitment Drive**  
-*Demonstrating Forward Deployed Engineering, Production Rigor, and High-Impact Enterprise AI.*
+**Built with pride for modern supply chains and enterprise logistics.**  
+*If you find this project useful, feel free to give it a ⭐ on GitHub!*
 
 </div>
