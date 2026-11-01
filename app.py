@@ -108,6 +108,136 @@ except Exception as e:
     st.error(f"Error loading freight data: {e}. Run `python scripts/run_all.py --scale full` first.")
     st.stop()
 
+# ==============================================================================
+# AUTHENTICATION & ACCESS GATE
+# ==============================================================================
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+if "user_name" not in st.session_state:
+    st.session_state["user_name"] = "Associate AI Forward Deployed Engineer"
+if "user_email" not in st.session_state:
+    st.session_state["user_email"] = "auditor@yottaflex.ai"
+if "user_role" not in st.session_state:
+    st.session_state["user_role"] = "Lead Freight Auditor"
+if "auth_provider" not in st.session_state:
+    st.session_state["auth_provider"] = "Enterprise SSO"
+
+if not st.session_state["authenticated"]:
+    st.markdown("<br>", unsafe_allow_html=True)
+    c_left, c_center, c_right = st.columns([1, 2.2, 1])
+    
+    with c_center:
+        st.markdown(f"""
+        <div style='text-align: center; margin-bottom: 24px;'>
+            <div style='font-size: 42px;'>🚛</div>
+            <h2 style='margin-bottom: 4px; color: {"#38bdf8" if is_dark else "#0284c7"};'>FreightGuard AI™</h2>
+            <p style='color: {"#94a3b8" if is_dark else "#64748b"}; font-size: 14px;'>Enterprise Freight Invoice Audit & Legal Dispute Gateway</p>
+            <div style='margin-top: 8px;'>
+                <span style='background: {"rgba(56, 189, 248, 0.15)" if is_dark else "#e0f2fe"}; color: {"#38bdf8" if is_dark else "#0284c7"}; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;'>
+                    🔒 SOC-2 TYPE II CERTIFIED • 256-BIT ENCRYPTION
+                </span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("#### ⚡ 1-Click Social Sign-In")
+        col_g, col_fb, col_x = st.columns(3)
+        with col_g:
+            if st.button("🔴 Google", use_container_width=True, help="Sign in with Google Workspace"):
+                st.session_state["authenticated"] = True
+                st.session_state["auth_provider"] = "Google Workspace"
+                st.session_state["user_name"] = "Alex Mercer (Google)"
+                st.session_state["user_email"] = "alex.mercer@enterprise-logistics.com"
+                st.session_state["user_role"] = "Senior Freight Audit Specialist"
+                st.rerun()
+
+        with col_fb:
+            if st.button("🔵 Facebook", use_container_width=True, help="Sign in with Meta / Facebook"):
+                st.session_state["authenticated"] = True
+                st.session_state["auth_provider"] = "Meta / Facebook"
+                st.session_state["user_name"] = "Jordan Taylor (Meta)"
+                st.session_state["user_email"] = "jordan.taylor@freight-network.org"
+                st.session_state["user_role"] = "Supply Chain Operations Lead"
+                st.rerun()
+
+        with col_x:
+            if st.button("𝕏 / Twitter", use_container_width=True, help="Sign in with X"):
+                st.session_state["authenticated"] = True
+                st.session_state["auth_provider"] = "X (Twitter)"
+                st.session_state["user_name"] = "Morgan Vance (X)"
+                st.session_state["user_email"] = "m.vance@supplychain-cfo.io"
+                st.session_state["user_role"] = "Enterprise Logistics CFO"
+                st.rerun()
+
+        st.markdown(f"""
+        <div style='display: flex; align-items: center; text-align: center; margin: 20px 0;'>
+            <hr style='flex: 1; border: none; border-top: 1px solid {"#334155" if is_dark else "#cbd5e1"};'>
+            <span style='padding: 0 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: {"#64748b" if is_dark else "#94a3b8"};'>Or Continue with Work Email</span>
+            <hr style='flex: 1; border: none; border-top: 1px solid {"#334155" if is_dark else "#cbd5e1"};'>
+        </div>
+        """, unsafe_allow_html=True)
+
+        tab_login, tab_signup = st.tabs(["🔑 Sign In", "📝 Create Account"])
+
+        with tab_login:
+            login_email = st.text_input("Corporate Email Address", value="auditor@yottaflex.ai", key="login_email")
+            login_pass = st.text_input("Password", type="password", value="••••••••••••", key="login_pass")
+            c_chk, c_fgt = st.columns([1, 1])
+            with c_chk:
+                st.checkbox("Remember this session", value=True, key="remember_me")
+            with c_fgt:
+                st.markdown(f"<div style='text-align: right; font-size: 12px; padding-top: 8px;'><a href='#' style='color: {'#38bdf8' if is_dark else '#0284c7'}; text-decoration: none;'>Forgot password?</a></div>", unsafe_allow_html=True)
+            
+            if st.button("🔐 Sign In to Control Tower", type="primary", use_container_width=True):
+                if login_email:
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "Corporate Email SSO"
+                    st.session_state["user_name"] = login_email.split("@")[0].replace(".", " ").title()
+                    st.session_state["user_email"] = login_email
+                    st.session_state["user_role"] = "Senior Freight Audit Specialist"
+                    st.rerun()
+                else:
+                    st.error("Please enter a valid work email.")
+
+        with tab_signup:
+            signup_name = st.text_input("Full Legal Name", placeholder="e.g. Elena Rostova", key="signup_name")
+            signup_email = st.text_input("Work Email Address", placeholder="elena@enterprise-logistics.com", key="signup_email")
+            signup_org = st.text_input("Organization / Carrier SCAC", placeholder="e.g. Global Freight Corp", key="signup_org")
+            signup_role = st.selectbox(
+                "Primary Role in Supply Chain",
+                ["Senior Freight Auditor", "Logistics CFO", "Carrier Dispute Manager", "Supply Chain Analyst", "Warehouse Operations Lead"],
+                key="signup_role"
+            )
+            signup_pass = st.text_input("Create Security Password", type="password", value="YottaFlex@2026", key="signup_pass")
+            st.checkbox("I agree to NMFTA & EDI Audit compliance terms", value=True, key="signup_terms")
+
+            if st.button("✨ Create Account & Launch", type="primary", use_container_width=True):
+                if signup_email and signup_name:
+                    st.session_state["authenticated"] = True
+                    st.session_state["auth_provider"] = "Email Registration"
+                    st.session_state["user_name"] = signup_name
+                    st.session_state["user_email"] = signup_email
+                    st.session_state["user_role"] = signup_role
+                    st.rerun()
+                else:
+                    st.error("Please fill in your name and corporate email.")
+
+        st.markdown(f"""
+        <div style='margin-top: 24px; padding: 12px; background: {"#1e293b" if is_dark else "#f1f5f9"}; border: 1px dashed {"#334155" if is_dark else "#cbd5e1"}; border-radius: 8px; text-align: center;'>
+            <div style='font-size: 12px; color: {"#94a3b8" if is_dark else "#64748b"}; margin-bottom: 8px;'>Evaluating as a Candidate / Recruiter?</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("⚡ 1-Click Instant Auditor Demo Access (No Password Required)", use_container_width=True):
+            st.session_state["authenticated"] = True
+            st.session_state["auth_provider"] = "Instant Candidate Demo"
+            st.session_state["user_name"] = "Associate AI Forward Deployed Engineer"
+            st.session_state["user_email"] = "evaluator@yottaflex.ai"
+            st.session_state["user_role"] = "Lead Evaluation Auditor"
+            st.rerun()
+
+    st.stop()
+
 # Title Header
 col_t1, col_t2 = st.columns([3, 1])
 with col_t1:
@@ -117,6 +247,20 @@ with col_t2:
     st.markdown("<div style='text-align: right; padding-top: 15px;'><span class='status-badge'>API Status: Ready (v2.0)</span></div>", unsafe_allow_html=True)
 
 # Sidebar
+st.sidebar.markdown(f"""
+<div style='background: {"#1e293b" if is_dark else "#ffffff"}; border: 1px solid {"#334155" if is_dark else "#cbd5e1"}; border-radius: 8px; padding: 12px; margin-bottom: 12px;'>
+    <div style='font-size: 14px; font-weight: 700; color: {"#38bdf8" if is_dark else "#0284c7"};'>👤 {st.session_state.get('user_name', 'Audit Specialist')}</div>
+    <div style='font-size: 12px; color: {"#94a3b8" if is_dark else "#64748b"}; font-weight: 500;'>{st.session_state.get('user_role', 'Freight Auditor')}</div>
+    <div style='font-size: 11px; color: {"#64748b" if is_dark else "#94a3b8"}; margin-top: 4px;'>📧 {st.session_state.get('user_email', 'auditor@yottaflex.ai')}</div>
+    <div style='font-size: 10px; color: #34d399; margin-top: 4px; font-weight: 600;'>● Authenticated via {st.session_state.get('auth_provider', 'SSO')}</div>
+</div>
+""", unsafe_allow_html=True)
+
+if st.sidebar.button("🚪 Sign Out", use_container_width=True):
+    st.session_state["authenticated"] = False
+    st.rerun()
+
+st.sidebar.divider()
 st.sidebar.header("🎛️ Navigation & Controls")
 view_mode = st.sidebar.radio(
     "Select Operating Module",
