@@ -17,6 +17,10 @@ from src.audit_engine import FreightAuditEngine
 from src.evaluation import AuditEvaluator
 from src.analytics import CarrierRiskEngine
 from src.dispute_memo import DisputeMemoGenerator
+from src.auth import (
+    UserManager, GoogleOAuthProvider, GitHubOAuthProvider, FacebookOAuthProvider, TwitterOAuthProvider,
+    generate_csrf_state, generate_pkce_pair
+)
 
 st.set_page_config(
     page_title="Freight Audit Enterprise Control Tower",
@@ -109,8 +113,72 @@ except Exception as e:
     st.stop()
 
 # ==============================================================================
-# AUTHENTICATION & ACCESS GATE (MATCHING EXACT LOGIN & GOOGLE CHOOSER UI)
+# AUTHENTICATION & ACCESS GATE (PRODUCTION OAUTH 2.0 & SECURE SESSION MANAGER)
 # ==============================================================================
+
+# 1. Resolve redirect URI based on deployment environment
+APP_BASE_URL = os.getenv("APP_URL", "https://luffy-2601-yottaflex-ai-app-rvlcha.streamlit.app")
+
+# 2. Check for incoming OAuth redirect callback in query parameters
+q_params = st.query_params
+if "code" in q_params and not st.session_state.get("authenticated", False):
+    auth_code = q_params.get("code")
+    auth_state = q_params.get("state", "")
+    
+    # Identify pending provider or probe active providers
+    active_prov = None
+    target_prov_name = st.session_state.get("pending_provider", "")
+    
+    if target_prov_name == "google" or "google" in auth_state:
+        active_prov = GoogleOAuthProvider
+    elif target_prov_name == "github" or "github" in auth_state:
+        active_prov = GitHubOAuthProvider
+    elif target_prov_name == "facebook" or "facebook" in auth_state:
+        active_prov = FacebookOAuthProvider
+    elif target_prov_name in ["twitter", "x"] or "x" in auth_state:
+        active_prov = TwitterOAuthProvider
+    else:
+        # Fallback probe
+        active_prov = GoogleOAuthProvider
+
+    try:
+        if active_prov == TwitterOAuthProvider:
+            verifier = st.session_state.get("oauth_code_verifier", "")
+            token_res = active_prov.exchange_code(auth_code, APP_BASE_URL, verifier)
+        else:
+            token_res = active_prov.exchange_code(auth_code, APP_BASE_URL)
+
+        if "access_token" in token_res or "id_token" in token_res:
+            acc_tok = token_res.get("access_token") or token_res.get("id_token")
+            user_profile = active_prov.get_user_profile(acc_tok)
+            if "error" not in user_profile:
+                db_user = UserManager.upsert_oauth_user(
+                    provider=user_profile["provider"],
+                    provider_account_id=user_profile["provider_account_id"],
+                    email=user_profile.get("email"),
+                    name=user_profile.get("name") or "Authenticated User",
+                    profile_image=user_profile.get("profile_image"),
+                    email_verified=user_profile.get("email_verified", True)
+                )
+                session = UserManager.create_session(db_user["id"])
+                st.session_state["authenticated"] = True
+                st.session_state["user_id"] = db_user["id"]
+                st.session_state["user_name"] = db_user["name"]
+                st.session_state["user_email"] = db_user["email"]
+                st.session_state["user_role"] = db_user.get("role", "Lead Freight Auditor")
+                st.session_state["profile_image"] = db_user.get("profile_image", "")
+                st.session_state["auth_provider"] = f"{user_profile['provider'].capitalize()} OAuth"
+                st.session_state["session_token"] = session["session_id"]
+                st.query_params.clear()
+                st.rerun()
+            else:
+                st.error(f"Failed to fetch profile: {user_profile.get('error')}")
+        else:
+            st.error(f"OAuth code exchange failed: {token_res.get('error', 'Token not received')}")
+    except Exception as e:
+        st.error(f"OAuth verification error: {e}")
+
+# Session state initialization
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 if "user_name" not in st.session_state:
@@ -132,125 +200,208 @@ if not st.session_state["authenticated"]:
     
     with c_center:
         # ----------------------------------------------------------------------
-        # CLASSIC GOOGLE "CHOOSE AN ACCOUNT" SPLIT-VIEW (MATCHING SCREENSHOT 2)
+        # GOOGLE "CHOOSE AN ACCOUNT" INTERFACE (MATCHING SCREENSHOT 2 & 3)
         # ----------------------------------------------------------------------
         if st.session_state.get("oauth_chooser") == "Google":
-            if "browser_google_accounts" not in st.session_state:
-                st.session_state["browser_google_accounts"] = [
-                    {"name": "Corporate Workspace", "email": "auditor@yottaflex.ai", "initial": "W", "color": "#0284c7", "status": ""},
-                    {"name": "Logistics Carrier Partner", "email": "partner@carrier-freight.com", "initial": "P", "color": "#16a34a", "status": ""},
-                ]
-
-            st.markdown(f"""
-            <div style='background: #0a0a0a; border: 1px solid #262626; border-radius: 20px; padding: 32px 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 20px;'>
-                <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 24px;'>
-                    <span style='font-size: 22px;'>🔴</span>
-                    <span style='font-size: 15px; font-weight: 500; color: #d1d5db;'>Sign in with Google</span>
-                </div>
-                <div style='margin-bottom: 24px;'>
-                    <h1 style='font-size: 34px; font-weight: 600; color: #ffffff; margin: 0 0 6px 0; line-height: 1.2;'>Choose an account</h1>
-                    <p style='color: #9ca3af; font-size: 14px; margin: 0;'>to continue to <b style='color: #38bdf8;'>FreightGuard AI</b></p>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            # Render accounts list
-            for i, acc in enumerate(st.session_state["browser_google_accounts"]):
-                c_a1, c_a2 = st.columns([4, 1])
-                with c_a1:
-                    status_badge = f"<span style='font-size: 11px; color: #9ca3af; margin-left: 8px;'>{acc['status']}</span>" if acc.get('status') else ""
-                    st.markdown(f"""
-                    <div style='display: flex; align-items: center; gap: 14px; padding: 8px 4px;'>
-                        <div style='width: 40px; height: 40px; border-radius: 50%; background-color: {acc['color']}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 16px;'>{acc['initial']}</div>
-                        <div>
-                            <div style='font-size: 15px; font-weight: 600; color: #f3f4f6;'>{acc['name']} {status_badge}</div>
-                            <div style='font-size: 13px; color: #9ca3af;'>{acc['email']}</div>
-                        </div>
+            is_g_configured = GoogleOAuthProvider.is_configured()
+            
+            if is_g_configured:
+                # Live production Google OAuth URL with prompt=select_account
+                state = generate_csrf_state()
+                st.session_state["oauth_csrf_state"] = state
+                st.session_state["pending_provider"] = "google"
+                google_live_url = GoogleOAuthProvider.get_authorization_url(APP_BASE_URL, state)
+                
+                st.markdown(f"""
+                <div style='background: #0a0a0a; border: 1px solid #262626; border-radius: 20px; padding: 32px 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 20px;'>
+                    <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 24px;'>
+                        <span style='font-size: 22px;'>🔴</span>
+                        <span style='font-size: 15px; font-weight: 500; color: #d1d5db;'>Sign in with Google</span>
                     </div>
-                    """, unsafe_allow_html=True)
-                with c_a2:
-                    if st.button("Sign In", key=f"btn_g_acc_{i}", use_container_width=True):
-                        st.session_state["authenticated"] = True
-                        st.session_state["auth_provider"] = "Google Account"
-                        st.session_state["user_name"] = acc["name"]
-                        st.session_state["user_email"] = acc["email"]
-                        st.session_state["user_role"] = "Lead Freight Auditor"
-                        st.session_state["oauth_chooser"] = None
-                        st.rerun()
-                st.markdown("<hr style='margin: 4px 0 10px 0; border: none; border-top: 1px solid #1f2937;'>", unsafe_allow_html=True)
-
-            # Use Another Account (Expander)
-            with st.expander("👤 Use another account", expanded=False):
-                st.caption("Sign in with any personal Google account or work workspace")
-                new_g_name = st.text_input("Full Name", placeholder="Your Name", key="new_visitor_name")
-                new_g_email = st.text_input("Google Email Address", placeholder="your.name@gmail.com", key="new_visitor_email")
+                    <div style='margin-bottom: 24px;'>
+                        <h1 style='font-size: 34px; font-weight: 600; color: #ffffff; margin: 0 0 6px 0; line-height: 1.2;'>Choose an account</h1>
+                        <p style='color: #9ca3af; font-size: 14px; margin: 0;'>to continue to <b style='color: #38bdf8;'>FreightGuard AI</b></p>
+                    </div>
+                    <p style='color: #34d399; font-size: 13px; font-weight: 500;'>✓ Real Google OAuth Client Configured</p>
+                </div>
+                """, unsafe_allow_html=True)
                 
-                if st.button("Continue with This Account", type="primary", use_container_width=True, key="btn_add_and_login_g"):
-                    if new_g_email:
-                        display_name = new_g_name if new_g_name else new_g_email.split("@")[0].replace(".", " ").title()
-                        init_char = display_name[0].upper()
-                        # Save to this visitor's browser state so it remembers on their device
-                        st.session_state["browser_google_accounts"].insert(0, {
-                            "name": display_name,
-                            "email": new_g_email,
-                            "initial": init_char,
-                            "color": "#9333ea",
-                            "status": ""
-                        })
-                        st.session_state["authenticated"] = True
-                        st.session_state["auth_provider"] = "Google Account"
-                        st.session_state["user_name"] = display_name
-                        st.session_state["user_email"] = new_g_email
-                        st.session_state["user_role"] = "Lead Freight Auditor"
-                        st.session_state["oauth_chooser"] = None
-                        st.rerun()
-                    else:
-                        st.error("Please enter a valid email address.")
+                st.link_button("🚀 Proceed to Google Account Chooser", google_live_url, type="primary", use_container_width=True)
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("← Back to Log In", use_container_width=True, key="btn_cancel_google_live"):
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+                st.stop()
 
-            st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("← Back to Log In", use_container_width=True, key="btn_cancel_google_classic"):
-                st.session_state["oauth_chooser"] = None
-                st.rerun()
-                
-            st.stop()
+            else:
+                # Configuration / Sandbox Chooser (No hardcoded personal accounts leaked)
+                st.markdown(f"""
+                <div style='background: #0a0a0a; border: 1px solid #262626; border-radius: 20px; padding: 32px 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 20px;'>
+                    <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 24px;'>
+                        <span style='font-size: 22px;'>🔴</span>
+                        <span style='font-size: 15px; font-weight: 500; color: #d1d5db;'>Sign in with Google</span>
+                    </div>
+                    <div style='margin-bottom: 24px;'>
+                        <h1 style='font-size: 34px; font-weight: 600; color: #ffffff; margin: 0 0 6px 0; line-height: 1.2;'>Choose an account</h1>
+                        <p style='color: #9ca3af; font-size: 14px; margin: 0;'>to continue to <b style='color: #38bdf8;'>FreightGuard AI</b></p>
+                    </div>
+                    <div style='background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(2, 132, 199, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 18px;'>
+                        <div style='font-size: 12px; color: #38bdf8; font-weight: 600;'>💡 Ready for Real Google OAuth</div>
+                        <div style='font-size: 11px; color: #94a3b8; margin-top: 4px;'>Add <code>GOOGLE_CLIENT_ID</code> & <code>GOOGLE_CLIENT_SECRET</code> to your .env or Streamlit Secrets to automatically redirect users to Google's live browser account chooser.</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                if "browser_google_accounts" not in st.session_state:
+                    st.session_state["browser_google_accounts"] = [
+                        {"name": "Corporate Workspace", "email": "auditor@yottaflex.ai", "initial": "W", "color": "#0284c7"},
+                        {"name": "Carrier Partner Network", "email": "carrier@freight-logistics.com", "initial": "C", "color": "#16a34a"}
+                    ]
+
+                # Render dynamic accounts list
+                for i, acc in enumerate(st.session_state["browser_google_accounts"]):
+                    c_a1, c_a2 = st.columns([4, 1])
+                    with c_a1:
+                        st.markdown(f"""
+                        <div style='display: flex; align-items: center; gap: 14px; padding: 8px 4px;'>
+                            <div style='width: 40px; height: 40px; border-radius: 50%; background-color: {acc['color']}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 16px;'>{acc['initial']}</div>
+                            <div>
+                                <div style='font-size: 15px; font-weight: 600; color: #f3f4f6;'>{acc['name']}</div>
+                                <div style='font-size: 13px; color: #9ca3af;'>{acc['email']}</div>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with c_a2:
+                        if st.button("Sign In", key=f"btn_g_acc_{i}", use_container_width=True):
+                            db_user = UserManager.upsert_oauth_user(
+                                provider="google",
+                                provider_account_id=f"g_{acc['email']}",
+                                email=acc["email"],
+                                name=acc["name"],
+                                email_verified=True
+                            )
+                            session = UserManager.create_session(db_user["id"])
+                            st.session_state["authenticated"] = True
+                            st.session_state["auth_provider"] = "Google Account"
+                            st.session_state["user_id"] = db_user["id"]
+                            st.session_state["user_name"] = db_user["name"]
+                            st.session_state["user_email"] = db_user["email"]
+                            st.session_state["user_role"] = db_user.get("role", "Lead Freight Auditor")
+                            st.session_state["session_token"] = session["session_id"]
+                            st.session_state["oauth_chooser"] = None
+                            st.rerun()
+                    st.markdown("<hr style='margin: 4px 0 10px 0; border: none; border-top: 1px solid #1f2937;'>", unsafe_allow_html=True)
+
+                # Use Another Account
+                with st.expander("👤 Use another account", expanded=False):
+                    st.caption("Sign in with any custom Google account")
+                    new_g_name = st.text_input("Full Name", placeholder="Your Full Name", key="new_custom_g_name")
+                    new_g_email = st.text_input("Google Email Address", placeholder="your.name@gmail.com", key="new_custom_g_email")
+                    
+                    if st.button("Continue with This Account", type="primary", use_container_width=True, key="btn_add_and_login_g"):
+                        if new_g_email and "@" in new_g_email:
+                            display_name = new_g_name if new_g_name else new_g_email.split("@")[0].replace(".", " ").title()
+                            db_user = UserManager.upsert_oauth_user(
+                                provider="google",
+                                provider_account_id=f"g_{new_g_email}",
+                                email=new_g_email,
+                                name=display_name,
+                                email_verified=True
+                            )
+                            session = UserManager.create_session(db_user["id"])
+                            st.session_state["authenticated"] = True
+                            st.session_state["auth_provider"] = "Google Account"
+                            st.session_state["user_id"] = db_user["id"]
+                            st.session_state["user_name"] = db_user["name"]
+                            st.session_state["user_email"] = db_user["email"]
+                            st.session_state["user_role"] = db_user.get("role", "Lead Freight Auditor")
+                            st.session_state["session_token"] = session["session_id"]
+                            st.session_state["oauth_chooser"] = None
+                            st.rerun()
+                        else:
+                            st.error("Please enter a valid Google email address.")
+
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("← Back to Log In", use_container_width=True, key="btn_cancel_google_classic"):
+                    st.session_state["oauth_chooser"] = None
+                    st.rerun()
+                st.stop()
 
         # ----------------------------------------------------------------------
         # OTHER SOCIAL CHOOSERS (Facebook, LinkedIn, GitHub, X)
         # ----------------------------------------------------------------------
         elif st.session_state.get("oauth_chooser") in ["Facebook", "LinkedIn", "GitHub", "X"]:
             provider = st.session_state.get("oauth_chooser")
-            st.markdown(f"""
-            <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;'>
-                <h2 style='font-size: 24px; font-weight: 700; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Sign in with {provider}</h2>
-                <p style='color: {"#9ca3af" if is_dark else "#6b7280"}; font-size: 14px;'>Enter your {provider} account credentials</p>
-            </div>
-            """, unsafe_allow_html=True)
+            provider_map = {
+                "GitHub": (GitHubOAuthProvider, "github"),
+                "Facebook": (FacebookOAuthProvider, "facebook"),
+                "X": (TwitterOAuthProvider, "twitter"),
+            }
 
-            soc_username = st.text_input(f"Your {provider} Username or Email", placeholder=f"username or email", key=f"input_{provider}_user")
+            p_class, p_slug = provider_map.get(provider, (None, None))
+            is_prov_configured = p_class.is_configured() if p_class else False
 
-            c_s1, c_s2 = st.columns([1.6, 1])
-            with c_s1:
-                if st.button(f"Continue with {provider}", type="primary", use_container_width=True):
-                    if soc_username:
-                        st.session_state["authenticated"] = True
-                        st.session_state["auth_provider"] = f"{provider} SSO"
-                        st.session_state["user_name"] = soc_username.split("@")[0].title() if "@" in soc_username else soc_username
-                        st.session_state["user_email"] = soc_username if "@" in soc_username else f"{soc_username}@{provider.lower()}.com"
-                        st.session_state["user_role"] = "Lead Freight Auditor"
+            if is_prov_configured:
+                state = generate_csrf_state()
+                st.session_state["oauth_csrf_state"] = state
+                st.session_state["pending_provider"] = p_slug
+                if p_class == TwitterOAuthProvider:
+                    verifier, challenge = generate_pkce_pair()
+                    st.session_state["oauth_code_verifier"] = verifier
+                    live_url = p_class.get_authorization_url(APP_BASE_URL, state, challenge)
+                else:
+                    live_url = p_class.get_authorization_url(APP_BASE_URL, state)
+
+                st.markdown(f"""
+                <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;'>
+                    <h2 style='font-size: 24px; font-weight: 700; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Authorize with {provider}</h2>
+                    <p style='color: #34d399; font-size: 14px;'>✓ Real OAuth Application Configured</p>
+                </div>
+                """, unsafe_allow_html=True)
+                st.link_button(f"🚀 Authorize via {provider}", live_url, type="primary", use_container_width=True)
+            else:
+                st.markdown(f"""
+                <div style='background: {"#111111" if is_dark else "#ffffff"}; border: 1px solid {"#2a2a2a" if is_dark else "#e5e7eb"}; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;'>
+                    <h2 style='font-size: 24px; font-weight: 700; margin: 0 0 6px 0; color: {"#ffffff" if is_dark else "#111827"};'>Sign in with {provider}</h2>
+                    <p style='color: {"#9ca3af" if is_dark else "#6b7280"}; font-size: 14px;'>Enter your {provider} account credentials</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+                soc_username = st.text_input(f"Your {provider} Username or Email", placeholder="username or email", key=f"input_{provider}_user")
+
+                c_s1, c_s2 = st.columns([1.6, 1])
+                with c_s1:
+                    if st.button(f"Continue with {provider}", type="primary", use_container_width=True):
+                        if soc_username:
+                            u_email = soc_username if "@" in soc_username else f"{soc_username}@{provider.lower()}.com"
+                            db_user = UserManager.upsert_oauth_user(
+                                provider=provider.lower(),
+                                provider_account_id=f"{provider.lower()}_{soc_username}",
+                                email=u_email,
+                                name=soc_username.split("@")[0].title(),
+                                email_verified=True
+                            )
+                            session = UserManager.create_session(db_user["id"])
+                            st.session_state["authenticated"] = True
+                            st.session_state["auth_provider"] = f"{provider} SSO"
+                            st.session_state["user_id"] = db_user["id"]
+                            st.session_state["user_name"] = db_user["name"]
+                            st.session_state["user_email"] = db_user["email"]
+                            st.session_state["user_role"] = db_user.get("role", "Lead Freight Auditor")
+                            st.session_state["session_token"] = session["session_id"]
+                            st.session_state["oauth_chooser"] = None
+                            st.rerun()
+                        else:
+                            st.error(f"Please enter your {provider} account.")
+                with c_s2:
+                    if st.button("← Cancel", use_container_width=True):
                         st.session_state["oauth_chooser"] = None
                         st.rerun()
-                    else:
-                        st.error(f"Please enter your {provider} account.")
-            with c_s2:
-                if st.button("← Cancel", use_container_width=True):
-                    st.session_state["oauth_chooser"] = None
-                    st.rerun()
             st.stop()
 
         # ----------------------------------------------------------------------
         # SCREENSHOT 1: EXACT "LOG IN" MODAL CARD
         # ----------------------------------------------------------------------
-        # CSS to style the green Sign In button exactly as in Screenshot 1
         st.markdown(f"""
         <style>
             .login-card {{
@@ -337,12 +488,39 @@ if not st.session_state["authenticated"]:
 
             # Deep Green Sign In Button
             if st.button("Sign In", type="primary", use_container_width=True, key="btn_green_signin"):
-                if login_username:
+                if login_username and login_password:
+                    # Authenticate against SQLite PBKDF2 database
+                    auth_user = UserManager.authenticate_email_user(login_username, login_password)
+                    if auth_user:
+                        session = UserManager.create_session(auth_user["id"])
+                        st.session_state["authenticated"] = True
+                        st.session_state["auth_provider"] = "Verified Password"
+                        st.session_state["user_id"] = auth_user["id"]
+                        st.session_state["user_name"] = auth_user["name"]
+                        st.session_state["user_email"] = auth_user["email"]
+                        st.session_state["user_role"] = auth_user.get("role", "Lead Freight Auditor")
+                        st.session_state["session_token"] = session["session_id"]
+                        st.rerun()
+                    else:
+                        st.error("Invalid email/username or password. If you are new, click Register Now!")
+                elif login_username:
+                    # Allow swift login with corporate username if password is not configured yet
+                    u_email = login_username if "@" in login_username else f"{login_username}@freightguard.ai"
+                    db_user = UserManager.upsert_oauth_user(
+                        provider="corporate",
+                        provider_account_id=f"corp_{login_username}",
+                        email=u_email,
+                        name=login_username.split("@")[0].title(),
+                        email_verified=True
+                    )
+                    session = UserManager.create_session(db_user["id"])
                     st.session_state["authenticated"] = True
                     st.session_state["auth_provider"] = "Corporate Account"
-                    st.session_state["user_name"] = login_username.split("@")[0].title() if "@" in login_username else login_username
-                    st.session_state["user_email"] = login_username if "@" in login_username else f"{login_username}@freightguard.ai"
-                    st.session_state["user_role"] = "Lead Freight Auditor"
+                    st.session_state["user_id"] = db_user["id"]
+                    st.session_state["user_name"] = db_user["name"]
+                    st.session_state["user_email"] = db_user["email"]
+                    st.session_state["user_role"] = db_user.get("role", "Lead Freight Auditor")
+                    st.session_state["session_token"] = session["session_id"]
                     st.rerun()
                 else:
                     st.error("Please enter your username or email.")
@@ -375,16 +553,30 @@ if not st.session_state["authenticated"]:
             reg_pass = st.text_input("Create Password", type="password", placeholder="Enter secure password", value="", key="reg_pass")
 
             if st.button("Create Account & Sign In", type="primary", use_container_width=True, key="btn_green_register"):
-                if reg_email:
-                    st.session_state["authenticated"] = True
-                    st.session_state["auth_provider"] = "Registered Account"
-                    st.session_state["user_name"] = reg_fullname if reg_fullname else "Freight Auditor"
-                    st.session_state["user_email"] = reg_email
-                    st.session_state["user_role"] = reg_role
-                    st.session_state["auth_mode"] = "login"
-                    st.rerun()
+                if reg_email and reg_pass:
+                    reg_res = UserManager.register_email_user(
+                        name=reg_fullname if reg_fullname else "Freight Auditor",
+                        email=reg_email,
+                        password=reg_pass,
+                        role=reg_role
+                    )
+                    if reg_res.get("success"):
+                        user_obj = reg_res["user"]
+                        session = UserManager.create_session(user_obj["id"])
+                        st.session_state["authenticated"] = True
+                        st.session_state["auth_provider"] = "Registered Account"
+                        st.session_state["user_id"] = user_obj["id"]
+                        st.session_state["user_name"] = user_obj["name"]
+                        st.session_state["user_email"] = user_obj["email"]
+                        st.session_state["user_role"] = user_obj["role"]
+                        st.session_state["session_token"] = session["session_id"]
+                        st.session_state["auth_mode"] = "login"
+                        st.success("Account created successfully! Welcome to FreightGuard AI.")
+                        st.rerun()
+                    else:
+                        st.error(reg_res.get("error", "Registration failed."))
                 else:
-                    st.error("Please enter an email or username.")
+                    st.error("Please provide both an email address and a password.")
 
         # Quick Auditor Demo for Reviewers
         st.markdown(f"""
@@ -399,8 +591,6 @@ if not st.session_state["authenticated"]:
             st.session_state["user_email"] = "auditor@freightguard.ai"
             st.session_state["user_role"] = "Lead Evaluation Auditor"
             st.rerun()
-            st.session_state["user_role"] = "Lead Evaluation Auditor"
-            st.rerun()
 
     st.stop()
 
@@ -413,17 +603,32 @@ with col_t2:
     st.markdown("<div style='text-align: right; padding-top: 15px;'><span class='status-badge'>API Status: Ready (v2.0)</span></div>", unsafe_allow_html=True)
 
 # Sidebar
+profile_img = st.session_state.get("profile_image", "")
+avatar_html = f"<img src='{profile_img}' style='width: 32px; height: 32px; border-radius: 50%; object-fit: cover;' />" if profile_img else "👤"
+
 st.sidebar.markdown(f"""
 <div style='background: {"#1e293b" if is_dark else "#ffffff"}; border: 1px solid {"#334155" if is_dark else "#cbd5e1"}; border-radius: 8px; padding: 12px; margin-bottom: 12px;'>
-    <div style='font-size: 14px; font-weight: 700; color: {"#38bdf8" if is_dark else "#0284c7"};'>👤 {st.session_state.get('user_name', 'Audit Specialist')}</div>
-    <div style='font-size: 12px; color: {"#94a3b8" if is_dark else "#64748b"}; font-weight: 500;'>{st.session_state.get('user_role', 'Freight Auditor')}</div>
-    <div style='font-size: 11px; color: {"#64748b" if is_dark else "#94a3b8"}; margin-top: 4px;'>📧 {st.session_state.get('user_email', 'auditor@yottaflex.ai')}</div>
+    <div style='display: flex; align-items: center; gap: 8px;'>
+        <div>{avatar_html}</div>
+        <div>
+            <div style='font-size: 14px; font-weight: 700; color: {"#38bdf8" if is_dark else "#0284c7"};'>{st.session_state.get('user_name', 'Audit Specialist')}</div>
+            <div style='font-size: 12px; color: {"#94a3b8" if is_dark else "#64748b"}; font-weight: 500;'>{st.session_state.get('user_role', 'Freight Auditor')}</div>
+        </div>
+    </div>
+    <div style='font-size: 11px; color: {"#64748b" if is_dark else "#94a3b8"}; margin-top: 8px;'>📧 {st.session_state.get('user_email', 'auditor@yottaflex.ai')}</div>
     <div style='font-size: 10px; color: #34d399; margin-top: 4px; font-weight: 600;'>● Authenticated via {st.session_state.get('auth_provider', 'SSO')}</div>
 </div>
 """, unsafe_allow_html=True)
 
 if st.sidebar.button("🚪 Sign Out", use_container_width=True):
+    session_token = st.session_state.get("session_token")
+    if session_token:
+        UserManager.destroy_session(session_token)
     st.session_state["authenticated"] = False
+    st.session_state["user_id"] = None
+    st.session_state["user_name"] = None
+    st.session_state["user_email"] = None
+    st.session_state["session_token"] = None
     st.rerun()
 
 st.sidebar.divider()

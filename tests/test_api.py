@@ -2,7 +2,12 @@
 Unit tests for API Endpoints and Business Logic.
 """
 import pytest
-from api import root, health_check, get_executive_metrics, get_carrier_scorecard, get_dispute_memo, audit_single_invoice, SingleInvoiceAuditRequest, AuditRequestLine
+from api import (
+    root, health_check, get_executive_metrics, get_carrier_scorecard, get_dispute_memo,
+    audit_single_invoice, SingleInvoiceAuditRequest, AuditRequestLine,
+    get_auth_provider_status, initiate_oauth_login, register_user, login_user, get_current_user, logout_user,
+    EmailRegisterRequest, EmailLoginRequest
+)
 
 def test_root_endpoint():
     """Verify root endpoint returns welcome info and docs link."""
@@ -56,3 +61,52 @@ def test_single_invoice_audit_endpoint_unknown_shipment():
     res = audit_single_invoice(req)
     assert res["audit_decision"] == "DISPUTE"
     assert res["exceptions"][0]["exception_code"] == "UNKNOWN_SHIPMENT"
+
+def test_api_auth_status_endpoint():
+    """Verify auth status endpoint reports provider statuses."""
+    status_res = get_auth_provider_status()
+    assert "google" in status_res
+    assert "github" in status_res
+    assert "facebook" in status_res
+    assert "x" in status_res
+    assert status_res["database"] == "sqlite_connected"
+
+def test_api_oauth_login_initiation():
+    """Verify OAuth initiation returns correct authorization URLs."""
+    for provider in ["google", "github", "facebook", "x"]:
+        res = initiate_oauth_login(provider)
+        assert res["provider"] == provider
+        assert "authorization_url" in res
+        assert "state" in res
+        assert len(res["state"]) >= 32
+
+def test_api_email_register_and_login_flow():
+    """Verify REST API registration and login flow with session token."""
+    test_email = "api_auditor@freightguard.io"
+    try:
+        reg_res = register_user(EmailRegisterRequest(
+            name="API Auditor",
+            email=test_email,
+            password="FreightApiSecret@2026",
+            role="Enterprise Auditor"
+        ))
+        assert reg_res["success"] is True
+        assert reg_res["session_id"] is not None
+        session_id = reg_res["session_id"]
+    except Exception:
+        # If user already exists
+        login_res = login_user(EmailLoginRequest(
+            email=test_email,
+            password="FreightApiSecret@2026"
+        ))
+        assert login_res["success"] is True
+        session_id = login_res["session_id"]
+
+    # Verify session retrieval via /auth/me
+    user_me = get_current_user(session_token=session_id)
+    assert user_me["email"] == test_email
+    assert "linked_accounts" in user_me
+
+    # Verify logout
+    logout_res = logout_user(session_token=session_id)
+    assert logout_res["success"] is True

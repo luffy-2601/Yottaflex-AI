@@ -16,12 +16,16 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Query, Response, Cookie
 from src.config import DATA_DIR
 from src.audit_engine import FreightAuditEngine
 from src.evaluation import AuditEvaluator
 from src.analytics import CarrierRiskEngine
 from src.dispute_memo import DisputeMemoGenerator
+from src.auth import (
+    UserManager, GoogleOAuthProvider, GitHubOAuthProvider, FacebookOAuthProvider, TwitterOAuthProvider,
+    generate_csrf_state, generate_pkce_pair
+)
 
 app = FastAPI(
     title="Freight Invoice Audit & Recovery REST API",
@@ -82,9 +86,161 @@ class HealthResponse(BaseModel):
     version: str
     engine: str
 
+class EmailRegisterRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: Optional[str] = "Lead Freight Auditor"
+
+class EmailLoginRequest(BaseModel):
+    email: str
+    password: str
+
+class AuthResponse(BaseModel):
+    success: bool
+    message: str
+    user: Optional[Dict[str, Any]] = None
+    session_id: Optional[str] = None
+
 # ==========================================
 # REST API Endpoints
 # ==========================================
+
+# Temporary in-memory state store for CSRF state validation and PKCE verification
+oauth_flow_cache: Dict[str, Dict[str, str]] = {}
+
+@app.get("/auth/status", tags=["Authentication"])
+def get_auth_provider_status():
+    """Returns configuration status for all 4 OAuth providers."""
+    return {
+        "google": GoogleOAuthProvider.is_configured(),
+        "github": GitHubOAuthProvider.is_configured(),
+        "facebook": FacebookOAuthProvider.is_configured(),
+        "x": TwitterOAuthProvider.is_configured(),
+        "database": "sqlite_connected"
+    }
+
+@app.get("/auth/{provider}/login", tags=["Authentication"])
+def initiate_oauth_login(provider: str, redirect_uri: Optional[str] = None):
+    """Generates the official OAuth authorization URL for Google, GitHub, Facebook, or X."""
+    p = provider.lower()
+    state = generate_csrf_state()
+    base_cb = redirect_uri or f"http://127.0.0.1:8000/auth/{p}/callback"
+
+    if p == "google":
+        auth_url = GoogleOAuthProvider.get_authorization_url(base_cb, state)
+        oauth_flow_cache[state] = {"provider": "google", "redirect_uri": base_cb}
+    elif p == "github":
+        auth_url = GitHubOAuthProvider.get_authorization_url(base_cb, state)
+        oauth_flow_cache[state] = {"provider": "github", "redirect_uri": base_cb}
+    elif p == "facebook":
+        auth_url = FacebookOAuthProvider.get_authorization_url(base_cb, state)
+        oauth_flow_cache[state] = {"provider": "facebook", "redirect_uri": base_cb}
+    elif p == "x":
+        verifier, challenge = generate_pkce_pair()
+        auth_url = TwitterOAuthProvider.get_authorization_url(base_cb, state, challenge)
+        oauth_flow_cache[state] = {"provider": "x", "redirect_uri": base_cb, "code_verifier": verifier}
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported OAuth provider: {provider}")
+
+    configured_map = {
+        "google": GoogleOAuthProvider.is_configured(),
+        "github": GitHubOAuthProvider.is_configured(),
+        "facebook": FacebookOAuthProvider.is_configured(),
+        "x": TwitterOAuthProvider.is_configured()
+    }
+
+    return {
+        "provider": p,
+        "authorization_url": auth_url,
+        "state": state,
+        "configured": configured_map.get(p, False)
+    }
+
+@app.get("/auth/{provider}/callback", tags=["Authentication"])
+def oauth_callback(provider: str, code: str = Query(...), state: str = Query(...)):
+    """Receives provider authorization code, exchanges it on backend, verifies user, and creates session."""
+    p = provider.lower()
+    cached = oauth_flow_cache.pop(state, None)
+    if not cached or cached.get("provider") != p:
+        raise HTTPException(status_code=400, detail="Invalid or expired OAuth state token (CSRF validation failed).")
+
+    cb_uri = cached["redirect_uri"]
+
+    if p == "google":
+        token_res = GoogleOAuthProvider.exchange_code(code, cb_uri)
+        if "error" in token_res:
+            raise HTTPException(status_code=400, detail=token_res)
+        profile = GoogleOAuthProvider.get_user_profile(token_res["access_token"])
+    elif p == "github":
+        token_res = GitHubOAuthProvider.exchange_code(code, cb_uri)
+        if "error" in token_res:
+            raise HTTPException(status_code=400, detail=token_res)
+        profile = GitHubOAuthProvider.get_user_profile(token_res["access_token"])
+    elif p == "facebook":
+        token_res = FacebookOAuthProvider.exchange_code(code, cb_uri)
+        if "error" in token_res:
+            raise HTTPException(status_code=400, detail=token_res)
+        profile = FacebookOAuthProvider.get_user_profile(token_res["access_token"])
+    elif p == "x":
+        token_res = TwitterOAuthProvider.exchange_code(code, cb_uri, cached["code_verifier"])
+        if "error" in token_res:
+            raise HTTPException(status_code=400, detail=token_res)
+        profile = TwitterOAuthProvider.get_user_profile(token_res["access_token"])
+    else:
+        raise HTTPException(status_code=400, detail="Unknown provider")
+
+    user = UserManager.get_or_create_oauth_user(
+        provider=profile["provider"],
+        provider_account_id=profile["provider_account_id"],
+        email=profile["email"],
+        name=profile["name"],
+        profile_image=profile.get("profile_image"),
+        email_verified=profile.get("email_verified", True)
+    )
+    session_id = UserManager.create_session(user["id"])
+    return {
+        "success": True,
+        "message": f"Successfully authenticated via {provider.capitalize()}.",
+        "user": user,
+        "session_id": session_id
+    }
+
+@app.post("/auth/register", response_model=AuthResponse, tags=["Authentication"])
+def register_user(req: EmailRegisterRequest):
+    """Registers a new user with email and hashed password."""
+    success, msg, user = UserManager.register_email_user(req.name, req.email, req.password, req.role or "Lead Freight Auditor")
+    if not success:
+        raise HTTPException(status_code=400, detail=msg)
+    session_id = UserManager.create_session(user["id"])
+    return {"success": True, "message": msg, "user": user, "session_id": session_id}
+
+@app.post("/auth/login", response_model=AuthResponse, tags=["Authentication"])
+def login_user(req: EmailLoginRequest):
+    """Authenticates an existing user via email and password."""
+    success, msg, user = UserManager.authenticate_email_user(req.email, req.password)
+    if not success:
+        raise HTTPException(status_code=401, detail=msg)
+    session_id = UserManager.create_session(user["id"])
+    return {"success": True, "message": msg, "user": user, "session_id": session_id}
+
+@app.get("/auth/me", tags=["Authentication"])
+def get_current_user(session_token: Optional[str] = Cookie(None)):
+    """Retrieves current user profile and linked accounts from session token."""
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated. Provide session_token cookie or header.")
+    user = UserManager.validate_session(session_token)
+    if not user:
+        raise HTTPException(status_code=401, detail="Session expired or invalid.")
+    user["linked_accounts"] = UserManager.get_linked_accounts(user["id"])
+    return user
+
+@app.post("/auth/logout", tags=["Authentication"])
+def logout_user(session_token: Optional[str] = Cookie(None)):
+    """Logs out and deletes the session token."""
+    if session_token:
+        UserManager.delete_session(session_token)
+    return {"success": True, "message": "Successfully logged out."}
 
 @app.get("/", tags=["Root"])
 def root():
